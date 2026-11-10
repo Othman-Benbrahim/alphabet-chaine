@@ -69,6 +69,8 @@ def scorer(racine=None) -> dict:
                            "p": {k: b[k].get("p") for k in ("A", "B", "C")},
                            "C_med": perte((b["C"].get("ombre_causale") or {}).get("p_mediation"), oui),
                            "C_nor": perte((b["C"].get("ombre_causale") or {}).get("p_noisy_or"), oui),
+                           "C_tmp": perte(next((t_["p"] for t_ in (b["C"].get("ombre_causale") or {}).get("tempere") or []
+                                                if t_.get("alpha") == 0.5), None), oui),
                            "A": perte(b["A"].get("p"), oui), "B": perte(b["B"].get("p"), oui),
                            "C": perte(b["C"].get("p"), oui), "statut_C": b["C"].get("statut")})
         comptees = [x for x in lignes if not x["rodage"]]
@@ -94,6 +96,12 @@ def scorer(racine=None) -> dict:
             d = [x["C_med"] - x["C"] for x in med]
             t["C_mediation_moins_C"] = {"n": len(d), "moyenne": round(sum(d) / len(d), 4),
                                         "sequence_confiance": _sequence(d)}
+        # Skill 0.7.58 (§35), en ombre : produit des λ à la puissance 0,5 (fixée d'avance) contre C.
+        tmp = [x for x in avec_c if x["C_tmp"] is not None]
+        if tmp:
+            d = [x["C_tmp"] - x["C"] for x in tmp]
+            t["C_tempere_moins_C"] = {"n": len(d), "moyenne": round(sum(d) / len(d), 4),
+                                      "sequence_confiance": _sequence(d)}
         # Skill 0.7.57 (§34), en ombre : les cartes lues comme des causes (noisy-or) contre le produit.
         nor = [x for x in avec_c if x["C_nor"] is not None]
         if nor:
