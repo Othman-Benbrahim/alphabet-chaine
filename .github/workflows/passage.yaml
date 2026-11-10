@@ -1,0 +1,78 @@
+name: Passage du banc
+
+on:
+  workflow_dispatch:
+    inputs:
+      par_passage:
+        description: "jetons tirés au plus pour ce passage"
+        default: "3"
+      attendre:
+        description: "oui = si aucun jeton n'a encore 15 min, attendre 16 min (premier passage)"
+        default: "non"
+  # Passages automatiques : à activer seulement après validation d'un premier passage manuel.
+  # schedule:
+  #   - cron: "7 * * * *"
+
+concurrency:
+  group: banc-registre        # une seule écriture du registre à la fois
+  cancel-in-progress: false
+
+permissions:
+  contents: write             # pour enregistrer le registre dans le dépôt
+
+jobs:
+  passage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bot Metaculus (pipeline de l'alphabet et skill)
+        uses: actions/checkout@v4
+        with:
+          repository: Othman-Benbrahim/metac-bot-template
+          path: bot
+          ref: ${{ vars.CHAINE_BOT_REF || 'main' }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: astral-sh/setup-uv@v10.3.0
+        with:
+          version: "0.13.1"
+      - name: Environnement du bot
+        working-directory: bot
+        run: uv sync --locked
+      - name: Contrôle du skill
+        working-directory: bot
+        run: uv run python alphabet-situationnel/scripts/moteur.py audit
+      - name: Tests hors ligne du banc
+        working-directory: bot
+        env:
+          ALPHABET_BOT: .
+        run: uv run python -m unittest discover -s ../tests
+      - name: Passage
+        working-directory: bot
+        timeout-minutes: 75
+        env:
+          OPENAI_API_KEY: ${{ secrets.FANTASY_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          OPENAI_API_BASE: ${{ vars.ALPHABET_API_BASE }}
+          ALPHABET_LLM: ${{ vars.ALPHABET_LLM }}
+          ALPHABET_PETIT_LLM: ${{ vars.ALPHABET_PETIT_LLM }}
+          ALPHABET_BOT: .
+          ALPHABET_REGISTRE: ${{ runner.temp }}/registre-bot
+          CHAINE_REGISTRE: ${{ github.workspace }}/registre
+        run: |
+          ATTENDRE=""
+          if [ "${{ github.event.inputs.attendre }}" = "oui" ]; then ATTENDRE="--attendre"; fi
+          uv run python ../chaine/passage.py --par-passage "${{ github.event.inputs.par_passage || '3' }}" $ATTENDRE
+      - name: Enregistrer le registre
+        if: always()
+        run: |
+          if [ -n "$(git status --porcelain registre)" ]; then
+            git config user.name "alphabet-chaine"
+            git config user.email "alphabet-chaine@users.noreply.github.com"
+            git add registre
+            git commit -m "registre : passage du $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase
+            git push
+          fi

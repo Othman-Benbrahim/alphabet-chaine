@@ -1,0 +1,81 @@
+"""Score du banc (protocole §6) : score logarithmique par question, C contre B et C contre A sur les MÊMES questions.
+
+- Les questions en rodage (B fondé sur moins de 30 issues du type) sont comptées à part, jamais dans le critère.
+- Pas de C = B : une question sans chiffre C (état nul, refus) n'entre pas dans la comparaison de C ; sa
+  fréquence est publiée (couverture).
+- Verdict : séquence de confiance du skill (`moteur.sequence_confiance`), appliquée à d = (perte log de C − perte
+  log de la référence) / (2 ln 1000), ramené dans [−½, ½] puisque les probabilités sont bornées à 0,001–0,999 ;
+  le signe, donc le verdict, ne dépend pas de ce facteur.
+"""
+from __future__ import annotations
+
+import json
+import math
+
+from . import registre
+
+CRITERE = 200     # questions résolues par type (protocole §6)
+ETAPE = 30        # bilan d'étape, sans conclusion
+ECHELLE = 2 * math.log(1000)
+
+
+def perte(p: float | None, oui: bool) -> float | None:
+    if p is None:
+        return None
+    p = min(0.999, max(0.001, float(p)))
+    return -math.log(p if oui else 1 - p)
+
+
+def _sequence(d: list[float]) -> dict | None:
+    try:
+        import alphabet_pipeline as ap
+        return ap._moteur().sequence_confiance([x / ECHELLE for x in d])
+    except Exception as e:
+        return {"erreur": f"{type(e).__name__}: {e}"[:200]}
+
+
+def scorer(racine=None) -> dict:
+    prev = {p["id"]: p for p in registre.lire("previsions.jsonl", racine)}
+    rapport: dict = {"par_type": {}}
+    for typ in ("R", "G"):
+        lignes = []
+        for i in registre.lire("issues.jsonl", racine):
+            p = prev.get(i["id"])
+            if not p or p["type"] != typ or i.get("issue") not in ("oui", "non"):
+                continue
+            oui = i["issue"] == "oui"
+            b = p["bras"]
+            lignes.append({"rodage": b["B"].get("rodage", True), "oui": oui,
+                           "A": perte(b["A"].get("p"), oui), "B": perte(b["B"].get("p"), oui),
+                           "C": perte(b["C"].get("p"), oui), "statut_C": b["C"].get("statut")})
+        comptees = [x for x in lignes if not x["rodage"]]
+        avec_c = [x for x in comptees if x["C"] is not None]
+        t: dict = {"resolues": len(lignes), "rodage": len(lignes) - len(comptees), "comptees": len(comptees),
+                   "taux_oui": round(sum(x["oui"] for x in comptees) / len(comptees), 3) if comptees else None,
+                   "couverture_C": round(len(avec_c) / len(comptees), 3) if comptees else None,
+                   "statuts_C": {}}
+        for x in comptees:
+            t["statuts_C"][x["statut_C"]] = t["statuts_C"].get(x["statut_C"], 0) + 1
+        for bras_ in ("A", "B"):
+            vals = [x[bras_] for x in comptees if x[bras_] is not None]
+            t[f"perte_{bras_}"] = round(sum(vals) / len(vals), 4) if vals else None
+        if avec_c:
+            t["perte_C_sur_ses_questions"] = round(sum(x["C"] for x in avec_c) / len(avec_c), 4)
+            for ref in ("B", "A"):
+                d = [x["C"] - x[ref] for x in avec_c if x[ref] is not None]
+                t[f"C_moins_{ref}"] = {"n": len(d), "moyenne": round(sum(d) / len(d), 4) if d else None,
+                                       "sequence_confiance": _sequence(d) if d else None}
+        n = len(comptees)
+        t["etape"] = ("critère atteint : verdict lisible" if n >= CRITERE else
+                      "bilan d'étape : contrôle de fonctionnement, aucune conclusion" if n >= ETAPE else
+                      "trop tôt")
+        rapport["par_type"][typ] = t
+    rapport["lecture"] = ("perte log : plus bas = mieux. C − B < 0 et C − A < 0, verdict « meilleur » des deux "
+                          "séquences à 200 questions par type : l'hypothèse tient (protocole §6).")
+    return rapport
+
+
+def ecrire_rapport(racine=None) -> dict:
+    r = scorer(racine)
+    registre.chemin("score.json", racine).write_text(json.dumps(r, ensure_ascii=False, indent=1), encoding="utf-8")
+    return r
