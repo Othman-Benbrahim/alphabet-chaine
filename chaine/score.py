@@ -68,6 +68,7 @@ def scorer(racine=None) -> dict:
             lignes.append({"rodage": b["B"].get("rodage", True), "oui": oui,
                            "p": {k: b[k].get("p") for k in ("A", "B", "C")},
                            "C_med": perte((b["C"].get("ombre_causale") or {}).get("p_mediation"), oui),
+                           "C_nor": perte((b["C"].get("ombre_causale") or {}).get("p_noisy_or"), oui),
                            "A": perte(b["A"].get("p"), oui), "B": perte(b["B"].get("p"), oui),
                            "C": perte(b["C"].get("p"), oui), "statut_C": b["C"].get("statut")})
         comptees = [x for x in lignes if not x["rodage"]]
@@ -93,6 +94,12 @@ def scorer(racine=None) -> dict:
             d = [x["C_med"] - x["C"] for x in med]
             t["C_mediation_moins_C"] = {"n": len(d), "moyenne": round(sum(d) / len(d), 4),
                                         "sequence_confiance": _sequence(d)}
+        # Skill 0.7.57 (§34), en ombre : les cartes lues comme des causes (noisy-or) contre le produit.
+        nor = [x for x in avec_c if x["C_nor"] is not None]
+        if nor:
+            d = [x["C_nor"] - x["C"] for x in nor]
+            t["C_noisy_or_moins_C"] = {"n": len(d), "moyenne": round(sum(d) / len(d), 4),
+                                       "sequence_confiance": _sequence(d)}
         # Complément descriptif (Paleka et al., ICLR 2026 : chaque métrique a son défaut ; rapporter log, Brier et
         # calibration ensemble). Le critère du protocole reste la perte log (§5) ; ces chiffres ne le remplacent pas.
         t["complements"] = {k: complements([(x["p"][k], x["oui"]) for x in comptees if x["p"][k] is not None])

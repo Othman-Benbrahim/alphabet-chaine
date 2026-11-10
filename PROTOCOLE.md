@@ -47,7 +47,8 @@ quel relevé vaut marqueur pour dix cartes et laisse six cartes Vides.
 Pas de C = B : sans carte ancrée, pas de chiffre C.
 En ombre (skill 0.7.56, §33), jamais dans le critère : la règle des médiateurs (`C_mediation`) et l'ablation carte
 par carte, comparées au C actuel sur les mêmes questions ; l'écart C − B est un contraste du dispositif, pas un
-contrefactuel.
+contrefactuel. Depuis la version 0.4.1 du banc (skill 0.7.57, §34), en ombre aussi : les cartes lues comme des causes
+(`C_noisy_or`) et la borne de la valeur de l'information, enregistrées avec C. Le protocole 4 ne change pas.
 
 ## 4. Intégrité
 
