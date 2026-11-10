@@ -9,6 +9,11 @@
    "statuts_C": {},
    "perte_A": null,
    "perte_B": null,
+   "complements": {
+    "A": null,
+    "B": null,
+    "C": null
+   },
    "etape": "trop tôt"
   },
   "G": {
@@ -20,6 +25,11 @@
    "statuts_C": {},
    "perte_A": null,
    "perte_B": null,
+   "complements": {
+    "A": null,
+    "B": null,
+    "C": null
+   },
    "etape": "trop tôt"
   }
  },
