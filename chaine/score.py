@@ -69,6 +69,7 @@ def scorer(racine=None) -> dict:
                            "p": {k: b[k].get("p") for k in ("A", "B", "C")},
                            "C_med": perte((b["C"].get("ombre_causale") or {}).get("p_mediation"), oui),
                            "C_nor": perte((b["C"].get("ombre_causale") or {}).get("p_noisy_or"), oui),
+                           "C_gen": perte(((b["C"].get("ombre_causale") or {}).get("generatif") or {}).get("p"), oui),
                            "C_tmp": perte(next((t_["p"] for t_ in (b["C"].get("ombre_causale") or {}).get("tempere") or []
                                                 if t_.get("alpha") == 0.5), None), oui),
                            "A": perte(b["A"].get("p"), oui), "B": perte(b["B"].get("p"), oui),
@@ -95,6 +96,12 @@ def scorer(racine=None) -> dict:
         if med:
             d = [x["C_med"] - x["C"] for x in med]
             t["C_mediation_moins_C"] = {"n": len(d), "moyenne": round(sum(d) / len(d), 4),
+                                        "sequence_confiance": _sequence(d)}
+        # Skill 0.7.59 (§36), en ombre : programme génératif (lecteur bruité, rejets comme preuves) contre C.
+        gen = [x for x in avec_c if x["C_gen"] is not None]
+        if gen:
+            d = [x["C_gen"] - x["C"] for x in gen]
+            t["C_generatif_moins_C"] = {"n": len(d), "moyenne": round(sum(d) / len(d), 4),
                                         "sequence_confiance": _sequence(d)}
         # Skill 0.7.58 (§35), en ombre : produit des λ à la puissance 0,5 (fixée d'avance) contre C.
         tmp = [x for x in avec_c if x["C_tmp"] is not None]
