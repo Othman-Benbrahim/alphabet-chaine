@@ -15,7 +15,7 @@ Llm = Callable[[str], Awaitable[str]]
 RODAGE = 30           # questions résolues du même type avant que B compte comme « établi » (protocole §6)
 SEUIL_VIDAGE = 0.20   # R : réserve totale sous 20 % de celle de l'instantané (protocole §2)
 HORIZON_H = 24
-PROTOCOLE = 3         # B ne compte que les questions du protocole en vigueur (même population de jetons)
+PROTOCOLE = 4         # B ne compte que les questions du protocole en vigueur (même population de jetons)
 
 
 def echeance(releve_le: str) -> str:
@@ -113,8 +113,12 @@ async def bras_c(llm: Llm, ident: str, mint: str, titre: str, criteres: str, fai
                     contexte="Banc « sans texte » : jeton de la chaîne Solana, lu dans ses seuls relevés de données.",
                     criteres=criteres, precisions="Horizon : 24 heures après le relevé.",
                     resolution=date.fromisoformat(echeance(releve_le)[:10]))
+    # Protocole 4 : le planificateur voit aussi les équivalents de données (skill 0.7.55, §32), comme la lecture : sans
+    # eux, il choisissait des candidates dont les marqueurs de données n'existent pas et omettait celles qui en ont.
+    equiv = ap.DOSSIER_SKILL / "references" / "equivalences" / "donnees-chaine.md"
+    pour_plan = (equiv.read_text(encoding="utf-8") + "\n\n" if equiv.is_file() else "") + faits
     try:
-        c = await ap.alphabet(q, faits, llm, pas_de_recherche, True, releve_le[:10], 1,
+        c = await ap.alphabet(q, pour_plan, llm, pas_de_recherche, True, releve_le[:10], 1,
                               vue_fixee=vue, donnees_fixees=faits)
     except Exception as e:
         return {"statut": "erreur", "motif": f"{type(e).__name__}: {e}"[:300]}

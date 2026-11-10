@@ -1,7 +1,9 @@
 # Protocole du banc — l'alphabet sans texte
 
-> Version 3, fixée le 2026-11-10 après deux passages de rodage (7 questions des versions 1 et 2, scorées à part et
-> exclues du taux de base). Version 3 : la lecture reçoit les équivalents de données des jetons (skill 0.7.55, §32). Toute modification = nouvelle version, scorée à part
+> Version 4, fixée le 2026-11-10 après trois passages de rodage (questions des versions 1 à 3, scorées à part et
+> exclues du taux de base ; aucune issue relevée encore). Version 3 : la lecture reçoit les équivalents de données
+> (skill 0.7.55, §32). Version 4 : le planificateur les reçoit aussi ; consigne de lecture du bot 0.9.9 (marqueurs
+> alternatifs, ancrage indépendant de l'objet de la question). Toute modification = nouvelle version, scorée à part
 > (`version_banc` dans chaque ligne du registre).
 
 ## 1. Hypothèse

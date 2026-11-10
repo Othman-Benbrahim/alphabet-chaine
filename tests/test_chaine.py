@@ -112,8 +112,8 @@ class Tests(unittest.TestCase):
         self.assertNotIn("None", t)
 
     def test_taux_de_base_sans_avenir(self):
-        prev = [{"id": "a", "type": "R", "protocole": 3, "releve_le": "2026-11-01T00:00:00Z"},
-                {"id": "b", "type": "R", "protocole": 3, "releve_le": "2026-11-01T01:00:00Z"},
+        prev = [{"id": "a", "type": "R", "protocole": 4, "releve_le": "2026-11-01T00:00:00Z"},
+                {"id": "b", "type": "R", "protocole": 4, "releve_le": "2026-11-01T01:00:00Z"},
                 {"id": "v1", "type": "R", "releve_le": "2026-11-01T01:00:00Z"}]      # autre protocole : hors de B
         iss = [{"id": "a", "issue": "oui", "releve_le": "2026-11-02T00:00:00Z"},
                {"id": "b", "issue": "non", "releve_le": "2026-11-02T05:00:00Z"},
@@ -144,11 +144,12 @@ class Tests(unittest.TestCase):
         self.assertAlmostEqual(r["bras"]["B"]["p"], 0.5)           # aucune issue encore : Jeffreys 0,5, rodage
         self.assertEqual(r["bras"]["C"]["statut"], "etat_nul")
         self.assertIsNone(r["bras"]["C"]["p"])                     # pas de C = B
+        self.assertIn("données de jetons", llm.consignes[1])         # protocole 4 : le plan voit les équivalents
         self.assertIn("[D1]", llm.consignes[2])                    # la lecture voit les relevés
         self.assertIn("RELEVÉS DE DONNÉES (banc sans texte)", llm.consignes[2])
         self.assertIn("série des bougies de 5 minutes", llm.consignes[2])
         self.assertIn("distribution des 20 premiers portefeuilles", llm.consignes[2])
-        self.assertEqual(r["protocole"], 3)
+        self.assertEqual(r["protocole"], 4)
         self.assertTrue((self.reg / r["instantane"]).is_file())
         # Issues 24 h plus tard : réserve divisée par 10 (vidage), graduation.
         c2 = client(reserve_facteur=0.1, graduer=True)
@@ -180,7 +181,7 @@ class Tests(unittest.TestCase):
         prev, iss = [], []
         for n in range(40):
             oui = n % 4 == 0
-            prev.append({"id": str(n), "type": "R", "protocole": 3, "releve_le": f"2026-11-01T{n % 24:02d}:00:00Z",
+            prev.append({"id": str(n), "type": "R", "protocole": 4, "releve_le": f"2026-11-01T{n % 24:02d}:00:00Z",
                          "bras": {"A": {"p": 0.5}, "B": {"p": 0.25, "rodage": False},
                                   "C": {"p": 0.6 if oui else 0.1, "statut": "estime"}}})
             iss.append({"id": str(n), "issue": "oui" if oui else "non", "releve_le": "2026-11-05T00:00:00Z"})
