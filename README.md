@@ -8,7 +8,8 @@ aucun argent, aucune publication : on mesure une prévision. Protocole : [`PROTO
 
 1. relève les issues des questions échues (`registre/issues.jsonl`) ;
 2. garnit le vivier des jetons nouveaux (`registre/vivier.jsonl`) ;
-3. tire au hasard 3 jetons de 15 min à 4 h, relève leur instantané (`registre/instantanes/`) ;
+3. relève, dans un ordre tiré au hasard, les jetons de 15 min à 4 h jusqu'à 3 jetons actifs (20 détenteurs, 10
+   transactions sur 1 h), avec leur série de bougies et la distribution des détenteurs (`registre/instantanes/`) ;
 4. pour chaque question (R, et G si le jeton est sur sa courbe) : bras B (compté), A (modèle seul), C (alphabet),
    scellés dans `registre/previsions.jsonl` ;
 5. récrit `registre/score.json`.

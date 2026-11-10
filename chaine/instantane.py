@@ -5,6 +5,8 @@ et C lisent exactement le même texte : seule la lecture alphabet distingue C de
 """
 from __future__ import annotations
 
+from datetime import datetime, timezone
+
 from .sources import epoch
 
 
@@ -48,11 +50,19 @@ def faits(inst: dict) -> list[dict]:
                 f"{_v(age_minutes(p.get('cree_le'), h), ' min')}")
         ajouter(g, u, h, "data[].attributes.fdv_usd",
                 f"valorisation totale diluée : {_v(p.get('fdv_usd'), ' $')} ; prix : {_v(p.get('prix_usd'), ' $')}")
-        for fen, nom in (("m5", "5 dernières minutes"), ("h1", "dernière heure"), ("h6", "6 dernières heures")):
+        for fen, nom in (("m5", "les 5 dernières minutes"), ("m15", "les 15 dernières minutes"),
+                         ("m30", "les 30 dernières minutes"), ("h1", "la dernière heure"), ("h6", "les 6 dernières heures")):
             ajouter(g, u, h, f"data[].attributes.transactions.{fen}",
-                    f"sur les {nom} : {_v(p.get(f'buys_{fen}'))} achats par {_v(p.get(f'buyers_{fen}'))} acheteurs, "
+                    f"sur {nom} : {_v(p.get(f'buys_{fen}'))} achats par {_v(p.get(f'buyers_{fen}'))} acheteurs, "
                     f"{_v(p.get(f'sells_{fen}'))} ventes par {_v(p.get(f'sellers_{fen}'))} vendeurs ; volume "
                     f"{_v(p.get(f'volume_{fen}_usd'), ' $')} ; variation du prix {_v(p.get(f'variation_{fen}_pct'), ' %')}")
+    bg = inst.get("bougies")
+    if bg and bg.get("bougies"):
+        serie = " ; ".join(f"{datetime.fromtimestamp(b['t'], timezone.utc):%H:%M} {_v(b['cloture'])} $ / {_v(b['volume_usd'])} $"
+                           for b in bg["bougies"])
+        ajouter("GeckoTerminal", bg["url"], bg["releve_le"], "data.attributes.ohlcv_list",
+                f"série des bougies de 5 minutes du pool principal, de la plus ancienne à la plus récente "
+                f"({len(bg['bougies'])} mesures ; heure UTC, prix de clôture / volume) : {serie}")
     rc = inst["rugcheck"]
     r, g, u, h = rc["resume"], "RugCheck", rc["url"], rc["releve_le"]
     ajouter(g, u, h, "totalHolders", f"nombre de détenteurs : {_v(r['detenteurs_total'])}")
@@ -60,6 +70,10 @@ def faits(inst: dict) -> list[dict]:
             f"les 10 premiers portefeuilles (pools et verrous exclus) détiennent {_v(r['top10_pct_hors_pools'], ' %')} "
             f"de l'offre ; parts une à une (%) : {r['top_parts_pct'] or 'non fournies'} ; dont marqués initiés : "
             f"{_v(r['top_initie'])}")
+    if r.get("top20"):
+        ajouter(g, u, h, "topHolders[].pct, topHolders[].insider",
+                "distribution des 20 premiers portefeuilles (pools et verrous exclus), part de l'offre en % "
+                "(* = marqué initié) : " + ", ".join(f"{x['part_pct']}{'*' if x['initie'] else ''}" for x in r["top20"]))
     ajouter(g, u, h, "creatorBalance / token.supply",
             f"part de l'offre encore détenue par le créateur : {_v(r['createur_part_pct'], ' %')} "
             "(creatorBalance / supply, calculé par le banc)")
@@ -80,6 +94,13 @@ def faits(inst: dict) -> list[dict]:
     return sortie
 
 
+EN_TETE = ("RELEVÉS DE DONNÉES (banc sans texte). Il n'y a ni article ni résultat de recherche : les seuls faits sont "
+           "les relevés [Dn] ci-dessous, chacun daté et sourcé (producteur, URL, champ). Ce sont des faits au sens de la "
+           "règle d'ancrage (faits de série). Une série de bougies est une suite de mesures datées d'une même grandeur ; "
+           "une distribution de portefeuilles décrit des positions et leurs parts ; des fenêtres de transactions de "
+           "5 minutes à 6 heures décrivent l'évolution de l'activité. Cite les relevés par leur numéro [Dn].")
+
+
 def texte_faits(liste: list[dict]) -> str:
-    return "\n".join(f"[D{x['n']}] {x['texte']} — source : {x['producteur']}, {x['url']} (champ {x['champ']}), "
+    return EN_TETE + "\n\n" + "\n".join(f"[D{x['n']}] {x['texte']} — source : {x['producteur']}, {x['url']} (champ {x['champ']}), "
                      f"relevé le {x['releve_le']}" for x in liste)

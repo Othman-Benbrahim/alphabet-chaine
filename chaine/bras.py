@@ -15,6 +15,7 @@ Llm = Callable[[str], Awaitable[str]]
 RODAGE = 30           # questions résolues du même type avant que B compte comme « établi » (protocole §6)
 SEUIL_VIDAGE = 0.20   # R : réserve totale sous 20 % de celle de l'instantané (protocole §2)
 HORIZON_H = 24
+PROTOCOLE = 2         # B ne compte que les questions du protocole en vigueur (même population de jetons)
 
 
 def echeance(releve_le: str) -> str:
@@ -48,7 +49,8 @@ def taux_de_base(typ: str, releve_le: str, previsions: list[dict], issues: list[
     debut = fin = None
     for i in issues:
         p = par_id.get(i.get("id"))
-        if not p or p.get("type") != typ or i.get("issue") not in ("oui", "non") or i["releve_le"] >= releve_le:
+        if (not p or p.get("type") != typ or p.get("protocole", 1) != PROTOCOLE or i.get("issue") not in ("oui", "non")
+                or i["releve_le"] >= releve_le):
             continue
         n += 1
         k += i["issue"] == "oui"

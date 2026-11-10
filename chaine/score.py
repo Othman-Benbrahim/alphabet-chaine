@@ -14,6 +14,7 @@ import math
 
 from . import registre
 
+PROTOCOLE = 2     # seules les questions du protocole en vigueur entrent dans le score ; les autres sont comptées à part
 CRITERE = 200     # questions résolues par type (protocole §6)
 ETAPE = 30        # bilan d'étape, sans conclusion
 ECHELLE = 2 * math.log(1000)
@@ -42,6 +43,10 @@ def scorer(racine=None) -> dict:
         for i in registre.lire("issues.jsonl", racine):
             p = prev.get(i["id"])
             if not p or p["type"] != typ or i.get("issue") not in ("oui", "non"):
+                continue
+            if p.get("protocole", 1) != PROTOCOLE:
+                rapport.setdefault("hors_protocole", {}).setdefault(typ, 0)
+                rapport["hors_protocole"][typ] += 1
                 continue
             oui = i["issue"] == "oui"
             b = p["bras"]

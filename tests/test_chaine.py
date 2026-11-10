@@ -23,6 +23,7 @@ from chaine import bras, instantane, passage, registre, score, sources  # noqa: 
 FIX = ICI / "fixtures"
 NOUVEAUX = json.loads((FIX / "gecko_new.json").read_text())
 RUG = json.loads((FIX / "rugcheck_report.json").read_text())
+OHLCV = json.loads((FIX / "gecko_ohlcv.json").read_text())
 PREMIER = sources.nouveaux_jetons(NOUVEAUX)[0]
 MINT = PREMIER["mint"]
 
@@ -34,6 +35,7 @@ def pools_de(mint: str, reserve_facteur: float = 1.0, graduer: bool = False) -> 
         p["attributes"]["reserve_in_usd"] = str(float(p["attributes"]["reserve_in_usd"]) * reserve_facteur)
         if graduer:
             p["relationships"]["dex"]["data"]["id"] = "pumpswap"
+        p["attributes"]["transactions"]["h1"].update(buys=25, sells=12)       # jeton actif (protocole 2)
     return {"data": data}
 
 
@@ -53,6 +55,8 @@ class Lecteur:
             return pools_de(url.split("/tokens/")[1].split("/")[0], self.f, self.g)
         if "rugcheck" in url:
             return RUG
+        if "/ohlcv/minute" in url:
+            return OHLCV
         raise AssertionError(url)
 
 
@@ -108,10 +112,12 @@ class Tests(unittest.TestCase):
         self.assertNotIn("None", t)
 
     def test_taux_de_base_sans_avenir(self):
-        prev = [{"id": "a", "type": "R", "releve_le": "2026-11-01T00:00:00Z"},
-                {"id": "b", "type": "R", "releve_le": "2026-11-01T01:00:00Z"}]
+        prev = [{"id": "a", "type": "R", "protocole": 2, "releve_le": "2026-11-01T00:00:00Z"},
+                {"id": "b", "type": "R", "protocole": 2, "releve_le": "2026-11-01T01:00:00Z"},
+                {"id": "v1", "type": "R", "releve_le": "2026-11-01T01:00:00Z"}]      # protocole 1 : hors de B
         iss = [{"id": "a", "issue": "oui", "releve_le": "2026-11-02T00:00:00Z"},
-               {"id": "b", "issue": "non", "releve_le": "2026-11-02T05:00:00Z"}]
+               {"id": "b", "issue": "non", "releve_le": "2026-11-02T05:00:00Z"},
+               {"id": "v1", "issue": "oui", "releve_le": "2026-11-02T00:00:00Z"}]
         b = bras.taux_de_base("R", "2026-11-02T03:00:00Z", prev, iss)   # l'issue de b, relevée après, n'entre pas
         self.assertEqual((b["k"], b["n"]), (1, 1))
         self.assertAlmostEqual(b["p"], 0.75)
@@ -139,6 +145,10 @@ class Tests(unittest.TestCase):
         self.assertEqual(r["bras"]["C"]["statut"], "etat_nul")
         self.assertIsNone(r["bras"]["C"]["p"])                     # pas de C = B
         self.assertIn("[D1]", llm.consignes[2])                    # la lecture voit les relevés
+        self.assertIn("RELEVÉS DE DONNÉES (banc sans texte)", llm.consignes[2])
+        self.assertIn("série des bougies de 5 minutes", llm.consignes[2])
+        self.assertIn("distribution des 20 premiers portefeuilles", llm.consignes[2])
+        self.assertEqual(r["protocole"], 2)
         self.assertTrue((self.reg / r["instantane"]).is_file())
         # Issues 24 h plus tard : réserve divisée par 10 (vidage), graduation.
         c2 = client(reserve_facteur=0.1, graduer=True)
@@ -158,11 +168,19 @@ class Tests(unittest.TestCase):
         self.assertEqual(iss[0]["issue"], "oui")
         self.assertTrue(iss[0]["absent"])
 
+    def test_jeton_inactif_ecarte(self):
+        po = sources.etat_pools([])
+        po.update(pools=[{"reserve_usd": 2500.0, "buys_h1": 1, "sells_h1": 1}], reserve_totale_usd=2500.0)
+        rc = {"resume": {"detenteurs_total": 2}}
+        self.assertIn("détenteurs", passage.ecarter(po, rc))
+        rc = {"resume": {"detenteurs_total": 50}}
+        self.assertIn("transactions", passage.ecarter(po, rc))
+
     def test_score_sequence(self):
         prev, iss = [], []
         for n in range(40):
             oui = n % 4 == 0
-            prev.append({"id": str(n), "type": "R", "releve_le": f"2026-11-01T{n % 24:02d}:00:00Z",
+            prev.append({"id": str(n), "type": "R", "protocole": 2, "releve_le": f"2026-11-01T{n % 24:02d}:00:00Z",
                          "bras": {"A": {"p": 0.5}, "B": {"p": 0.25, "rodage": False},
                                   "C": {"p": 0.6 if oui else 0.1, "statut": "estime"}}})
             iss.append({"id": str(n), "issue": "oui" if oui else "non", "releve_le": "2026-11-05T00:00:00Z"})

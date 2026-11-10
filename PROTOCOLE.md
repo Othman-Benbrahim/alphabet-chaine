@@ -1,6 +1,7 @@
 # Protocole du banc — l'alphabet sans texte
 
-> Version 1, fixée le 2026-11-10 avant toute donnée. Toute modification = nouvelle version, scorée à part
+> Version 2, fixée le 2026-11-10 après un seul passage de rodage (5 questions de la version 1, scorées à part et
+> exclues du taux de base). Toute modification = nouvelle version, scorée à part
 > (`version_banc` dans chaque ligne du registre).
 
 ## 1. Hypothèse
@@ -14,8 +15,11 @@ argent ; voir MemePilot Auto, qui a montré l'imprévisibilité des prix de 5 mi
 ## 2. Questions
 
 Jetons tirés au hasard parmi les jetons vus par GeckoTerminal (`new_pools`), âgés de **15 min à 4 h** au tirage,
-réserve totale **≥ 1 000 $** au relevé, rapport RugCheck disponible (éligibilité minimale, décision du
-2026-11-10 : pas de préfiltre de sécurité, qui écarterait les structures risquées). À **24 h** :
+réserve totale **≥ 1 000 $** au relevé, rapport RugCheck disponible, et **actifs** : au moins **20 détenteurs** et
+**10 transactions** sur la dernière heure du pool principal (version 2 : sur pump.fun, la réserve virtuelle de
+départ, environ 2 500 $, laissait passer des jetons sans aucune activité). Pas de préfiltre de sécurité, qui
+écarterait les structures risquées (décision du 2026-11-10). Les jetons sont relevés dans un ordre tiré au hasard
+jusqu'à 3 jetons éligibles par passage. À **24 h** :
 
 - **R (vidage)** : la réserve totale des pools du jeton (somme de `reserve_in_usd`, GeckoTerminal) est-elle sous
   **20 %** de celle de l'instantané ? Un jeton devenu inconnu de la source ou sans pool compte comme réserve nulle.
@@ -32,7 +36,10 @@ Issue relevée au premier passage après l'échéance ; une issue impossible à 
 | **A** | modèle principal, **mêmes faits**, sans alphabet | témoin : l'alphabet ajoute-t-il, ou nomme-t-il ? |
 | **C** | pipeline du bot Metaculus inchangé : le **planificateur choisit l'événement** de carte (décision du 2026-11-10), lecture des faits (règle §30 du skill), moteur en exploratoire (§29), vue = B | testé |
 
-Les faits sont des **faits de série** (skill 0.7.54, §31) : champ, valeur, producteur, URL, heure du relevé.
+Les faits sont des **faits de série** (skill 0.7.54, §31) : champ, valeur, producteur, URL, heure du relevé. Version 2 :
+les relevés comprennent la **série des bougies de 5 minutes** du pool principal (prix, volume, depuis la création,
+au plus 4 h), les **fenêtres de transactions** de 5 min à 6 h et la **distribution des 20 premiers portefeuilles** ;
+un en-tête neutre dit que les relevés [Dn] sont les seuls faits, sans nommer aucune carte.
 Pas de C = B : sans carte ancrée, pas de chiffre C.
 
 ## 4. Intégrité

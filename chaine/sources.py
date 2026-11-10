@@ -141,7 +141,7 @@ def pools_gecko(payload: Any) -> list[dict]:
                  "cree_le": a.get("pool_created_at"), "reserve_usd": _f(a.get("reserve_in_usd")),
                  "fdv_usd": _f(a.get("fdv_usd")), "capitalisation_usd": _f(a.get("market_cap_usd")),
                  "prix_usd": _f(a.get("base_token_price_usd"))}
-        for fen in ("m5", "h1", "h6"):
+        for fen in ("m5", "m15", "m30", "h1", "h6"):
             t = tx.get(fen) or {}
             ligne[f"variation_{fen}_pct"] = _f(chg.get(fen))
             ligne[f"volume_{fen}_usd"] = _f(vol.get(fen))
@@ -174,6 +174,7 @@ def resume_rugcheck(rapport: dict) -> dict:
     detenteurs = [h for h in rapport.get("topHolders") or [] if isinstance(h, dict)]
     gardes = [h for h in detenteurs if h.get("owner") not in exclus and h.get("address") not in exclus]
     top = [round(_f(h.get("pct")) or 0.0, 3) for h in gardes[:10]]
+    top20 = [{"part_pct": round(_f(h.get("pct")) or 0.0, 3), "initie": h.get("insider") is True} for h in gardes[:20]]
     reseaux = [n for n in rapport.get("insiderNetworks") or [] if isinstance(n, dict)]
     risques = [r for r in rapport.get("risks") or [] if isinstance(r, dict)]
     createur = _f(rapport.get("creatorBalance"))
@@ -183,6 +184,7 @@ def resume_rugcheck(rapport: dict) -> dict:
         "detenteurs_total": _i(rapport.get("totalHolders")),
         "top10_pct_hors_pools": round(sum(top), 3) if gardes else None,
         "top_parts_pct": top,
+        "top20": top20,
         "top_initie": sum(1 for h in gardes[:10] if h.get("insider") is True) if gardes else None,
         "createur_part_pct": round(100 * createur / offre, 3) if createur is not None and offre else None,
         "autorite_emission_renoncee": (rapport.get("mintAuthority") is None) if "mintAuthority" in rapport else None,
@@ -234,6 +236,24 @@ def releve_pools(client: Client, mint: str) -> dict:
                 **etat_pools([])}
     pools = [p for p in pools_gecko(data) if p["mint"] == mint]
     return {"pools": pools, "url": url, "releve_le": heure, "absent": False, **etat_pools(pools)}
+
+
+def bougies(payload: Any) -> list[dict]:
+    """OHLCV GeckoTerminal → bougies datées, de la plus ancienne à la plus récente."""
+    lignes = (((payload or {}).get("data") or {}).get("attributes") or {}).get("ohlcv_list") or []
+    sortie = []
+    for r in lignes:
+        if isinstance(r, list) and len(r) >= 6 and _f(r[0]) is not None:
+            sortie.append({"t": int(_f(r[0])), "ouverture": _f(r[1]), "haut": _f(r[2]), "bas": _f(r[3]),
+                           "cloture": _f(r[4]), "volume_usd": _f(r[5])})
+    return sorted(sortie, key=lambda b: b["t"])
+
+
+def releve_bougies(client: Client, pool: str, limite: int = 48) -> dict:
+    """Bougies de 5 minutes du pool principal (au plus 4 h) : une série de mesures datées (prix, volume)."""
+    data, url, heure = client.get("gecko", f"/networks/solana/pools/{pool}/ohlcv/minute?aggregate=5&limit={limite}"
+                                           "&currency=usd")
+    return {"bougies": bougies(data), "url": url, "releve_le": heure}
 
 
 def releve_rugcheck(client: Client, mint: str) -> dict:

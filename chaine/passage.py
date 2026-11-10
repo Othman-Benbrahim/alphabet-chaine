@@ -25,9 +25,12 @@ os.environ.setdefault("ALPHABET_EXPLORATOIRE", "1")
 from chaine import bras, instantane, registre, sources  # noqa: E402
 from chaine.sources import epoch  # noqa: E402
 
-VERSION = "0.1.0"
+VERSION = "0.2.0"
+PROTOCOLE = bras.PROTOCOLE
 AGE_MIN, AGE_MAX = 15, 240          # minutes (protocole §2)
 RESERVE_MIN = 1000.0                # $ : éligibilité minimale (décision du 2026-11-10)
+DETENTEURS_MIN = 20                 # protocole 2 : un jeton sans activité n'a pas de structure à lire
+TRANSACTIONS_H1_MIN = 10
 DELAI_ABANDON_H = 48                # une issue impossible à relever 48 h après l'échéance : « non_resolue »
 
 
@@ -107,13 +110,18 @@ async def prevoir_jeton(v: dict, client: sources.Client, llm, racine=None, model
         registre.ajouter("ecartes.jsonl", {"mint": mint, "motif": f"relevé impossible : {e}", "le": maintenant()},
                          racine, sceller=False)
         return []
-    if (po["reserve_totale_usd"] or 0) < RESERVE_MIN:
-        registre.ajouter("ecartes.jsonl", {"mint": mint, "motif": f"réserve {po['reserve_totale_usd']} < {RESERVE_MIN}",
-                                           "le": po["releve_le"]}, racine, sceller=False)
+    motif = ecarter(po, rc)
+    if motif:
+        registre.ajouter("ecartes.jsonl", {"mint": mint, "motif": motif, "le": po["releve_le"]}, racine, sceller=False)
         return []
+    principal = instantane.pool_principal(po["pools"])
+    try:
+        bg = sources.releve_bougies(client, principal["pool"]) if principal and principal.get("pool") else None
+    except (sources.Indisponible, sources.Absent):
+        bg = None
     releve_le = max(po["releve_le"], rc["releve_le"])
     inst = {"mint": mint, "symbole": (v.get("nom") or mint[:6]).split(" / ")[0], "releve_le": releve_le,
-            "pools": po, "rugcheck": rc, "vivier": v}
+            "pools": po, "rugcheck": rc, "bougies": bg, "vivier": v}
     fs = instantane.faits(inst)
     texte = instantane.texte_faits(fs)
     nom_inst = f"instantanes/{mint}-{releve_le.replace(':', '')}.json"
@@ -129,11 +137,25 @@ async def prevoir_jeton(v: dict, client: sources.Client, llm, racine=None, model
         c = await bras.bras_c(llm, ident, mint, e["titre"], e["criteres"], texte, releve_le,
                               bras.vue_fixee(typ, b, releve_le))
         lignes.append(registre.ajouter("previsions.jsonl", {
-            "version_banc": VERSION, "id": ident, "mint": mint, "type": typ, "releve_le": releve_le,
+            "version_banc": VERSION, "protocole": PROTOCOLE, "id": ident, "mint": mint, "type": typ, "releve_le": releve_le,
             "echeance": e["echeance"], "titre": e["titre"], "reserve_initiale": po["reserve_totale_usd"],
             "sur_courbe": po["sur_courbe"], "instantane": nom_inst, "instantane_sha256": sceau_inst,
             "modeles": modeles, "bras": {"A": a, "B": b, "C": c}}, racine))
     return lignes
+
+
+def ecarter(po: dict, rc: dict) -> str | None:
+    """Éligibilité (protocole 2) : réserve, détenteurs, transactions de la dernière heure sur le pool principal."""
+    if (po["reserve_totale_usd"] or 0) < RESERVE_MIN:
+        return f"réserve {po['reserve_totale_usd']} < {RESERVE_MIN}"
+    d = rc["resume"].get("detenteurs_total")
+    if d is None or d < DETENTEURS_MIN:
+        return f"détenteurs {d} < {DETENTEURS_MIN}"
+    p = instantane.pool_principal(po["pools"]) or {}
+    tx = (p.get("buys_h1") or 0) + (p.get("sells_h1") or 0)
+    if tx < TRANSACTIONS_H1_MIN:
+        return f"transactions sur 1 h {tx} < {TRANSACTIONS_H1_MIN}"
+    return None
 
 
 def lancer_llm():
@@ -173,8 +195,10 @@ def main() -> int:
             time.sleep(16 * 60)
             cands = candidats()
         graine = int(time.time())
-        lot = random.Random(graine).sample(cands, min(args.par_passage, len(cands)))
-        print(f"🎲  éligibles par l'âge : {len(cands)} ; tirés : {len(lot)} (graine {graine})")
+        # Ordre aléatoire ; on relève les jetons dans cet ordre jusqu'à en avoir `par_passage` éligibles (protocole 2),
+        # au plus 5 fois plus de relevés : le tirage reste uniforme parmi les jetons éligibles.
+        lot = random.Random(graine).sample(cands, min(5 * args.par_passage, len(cands)))
+        print(f"🎲  éligibles par l'âge : {len(cands)} ; ordre tiré (graine {graine}), {len(lot)} relevés au plus")
         prevues: list[dict] = []
         modeles = None
         if lot and not args.sans_prevision:
@@ -184,9 +208,13 @@ def main() -> int:
                 return 1
 
             async def tous() -> list[dict]:
-                sortie = []
+                sortie, retenus = [], 0
                 for v in lot:
-                    sortie += await prevoir_jeton(v, client, llm, modeles=modeles)
+                    if retenus >= args.par_passage:
+                        break
+                    lignes = await prevoir_jeton(v, client, llm, modeles=modeles)
+                    retenus += bool(lignes)
+                    sortie += lignes
                 return sortie
             prevues = asyncio.run(tous())
         for p in prevues:
