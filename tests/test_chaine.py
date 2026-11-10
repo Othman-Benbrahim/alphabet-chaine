@@ -183,7 +183,8 @@ class Tests(unittest.TestCase):
             oui = n % 4 == 0
             prev.append({"id": str(n), "type": "R", "protocole": 4, "releve_le": f"2026-11-01T{n % 24:02d}:00:00Z",
                          "bras": {"A": {"p": 0.5}, "B": {"p": 0.25, "rodage": False},
-                                  "C": {"p": 0.6 if oui else 0.1, "statut": "estime"}}})
+                                  "C": {"p": 0.6 if oui else 0.1, "statut": "estime",
+                                        "ombre_causale": {"p_mediation": 0.5 if oui else 0.15}}}})
             iss.append({"id": str(n), "issue": "oui" if oui else "non", "releve_le": "2026-11-05T00:00:00Z"})
         for p in prev:
             registre.ajouter("previsions.jsonl", p, self.reg)
@@ -193,6 +194,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(t["comptees"], 40)
         self.assertLess(t["C_moins_B"]["moyenne"], 0)
         self.assertIn("verdict", t["C_moins_B"]["sequence_confiance"])
+        self.assertEqual(t["C_mediation_moins_C"]["n"], 40)                # skill 0.7.56 : en ombre
+        self.assertGreater(t["C_mediation_moins_C"]["moyenne"], 0)
         self.assertEqual(t["complements"]["C"]["n"], 40)                    # Brier et calibration en complément
         self.assertIn("0.6–0.7", t["complements"]["C"]["calibration"])
         self.assertEqual(t["etape"], "bilan d'étape : contrôle de fonctionnement, aucune conclusion")

@@ -131,7 +131,10 @@ async def bras_c(llm: Llm, ident: str, mint: str, titre: str, criteres: str, fai
               "semantique": plan.get("semantique"), "etat": ex.get("etat") or c.get("etat"),
               "nature_etat_nul": ex.get("nature_etat_nul") or c.get("nature_etat_nul"),
               "p_symetrique": (c.get("symetrique") or {}).get("p"), "drapeaux": ex.get("drapeaux") or c.get("drapeaux"),
-              "tentatives": c.get("tentatives"), "reprises_plan": c.get("reprises_plan")}
+              "tentatives": c.get("tentatives"), "reprises_plan": c.get("reprises_plan"),
+              # skill 0.7.56 (§33), en ombre : règle des médiateurs et ablation carte par carte, jamais le chiffre C.
+              "ombre_causale": c.get("ombre_causale") or ex.get("ombre_causale"),
+              "faits_futurs_retires": c.get("faits_futurs_retires")}
     d = c.get("dossier")
     if d is not None:
         sortie["dossier"] = {k: v for k, v in d.items() if not str(k).startswith("_")}

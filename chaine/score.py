@@ -67,6 +67,7 @@ def scorer(racine=None) -> dict:
             b = p["bras"]
             lignes.append({"rodage": b["B"].get("rodage", True), "oui": oui,
                            "p": {k: b[k].get("p") for k in ("A", "B", "C")},
+                           "C_med": perte((b["C"].get("ombre_causale") or {}).get("p_mediation"), oui),
                            "A": perte(b["A"].get("p"), oui), "B": perte(b["B"].get("p"), oui),
                            "C": perte(b["C"].get("p"), oui), "statut_C": b["C"].get("statut")})
         comptees = [x for x in lignes if not x["rodage"]]
@@ -86,6 +87,12 @@ def scorer(racine=None) -> dict:
                 d = [x["C"] - x[ref] for x in avec_c if x[ref] is not None]
                 t[f"C_moins_{ref}"] = {"n": len(d), "moyenne": round(sum(d) / len(d), 4) if d else None,
                                        "sequence_confiance": _sequence(d) if d else None}
+        # Skill 0.7.56 (§33), en ombre : la règle des médiateurs contre le calcul actuel, sur les mêmes questions.
+        med = [x for x in avec_c if x["C_med"] is not None]
+        if med:
+            d = [x["C_med"] - x["C"] for x in med]
+            t["C_mediation_moins_C"] = {"n": len(d), "moyenne": round(sum(d) / len(d), 4),
+                                        "sequence_confiance": _sequence(d)}
         # Complément descriptif (Paleka et al., ICLR 2026 : chaque métrique a son défaut ; rapporter log, Brier et
         # calibration ensemble). Le critère du protocole reste la perte log (§5) ; ces chiffres ne le remplacent pas.
         t["complements"] = {k: complements([(x["p"][k], x["oui"]) for x in comptees if x["p"][k] is not None])

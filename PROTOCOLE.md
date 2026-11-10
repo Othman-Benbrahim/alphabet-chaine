@@ -45,6 +45,9 @@ un en-tête neutre dit que les relevés [Dn] sont les seuls faits, sans nommer a
 Version 3 : la lecture reçoit aussi `references/equivalences/donnees-chaine.md` (skill 0.7.55, §32), qui dit
 quel relevé vaut marqueur pour dix cartes et laisse six cartes Vides.
 Pas de C = B : sans carte ancrée, pas de chiffre C.
+En ombre (skill 0.7.56, §33), jamais dans le critère : la règle des médiateurs (`C_mediation`) et l'ablation carte
+par carte, comparées au C actuel sur les mêmes questions ; l'écart C − B est un contraste du dispositif, pas un
+contrefactuel.
 
 ## 4. Intégrité
 
