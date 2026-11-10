@@ -49,7 +49,8 @@ En ombre (skill 0.7.56, §33), jamais dans le critère : la règle des médiateu
 par carte, comparées au C actuel sur les mêmes questions ; l'écart C − B est un contraste du dispositif, pas un
 contrefactuel. Depuis la version 0.4.1 du banc (skill 0.7.57, §34), en ombre aussi : les cartes lues comme des causes
 (`C_noisy_or`) et la borne de la valeur de l'information, enregistrées avec C ; depuis 0.4.2 (skill 0.7.58, §35), C
-tempéré (α = 0,5, fixé d'avance). Le protocole 4 ne change pas.
+tempéré (α = 0,5, fixé d'avance) ; depuis 0.4.3 (skill 0.7.59, §36), le programme génératif. Le protocole 4 ne
+change pas.
 
 ## 4. Intégrité
 
