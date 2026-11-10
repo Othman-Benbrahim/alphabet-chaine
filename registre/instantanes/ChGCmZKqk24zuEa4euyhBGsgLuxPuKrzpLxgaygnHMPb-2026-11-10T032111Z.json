@@ -1,0 +1,370 @@
+{
+ "mint": "ChGCmZKqk24zuEa4euyhBGsgLuxPuKrzpLxgaygnHMPb",
+ "symbole": "GTA 6 Coin",
+ "releve_le": "2026-11-10T03:21:11Z",
+ "pools": {
+  "pools": [
+   {
+    "mint": "ChGCmZKqk24zuEa4euyhBGsgLuxPuKrzpLxgaygnHMPb",
+    "pool": "9yJb8YG7rr8J21tvKqEioSSvbbMAX3Doqm9d2UNTLgdF",
+    "nom": "GTA 6 Coin / SOL",
+    "dex": "pumpswap",
+    "cree_le": "2026-11-10T02:54:07Z",
+    "reserve_usd": 1550.7303,
+    "fdv_usd": 1545.5291801179,
+    "capitalisation_usd": null,
+    "prix_usd": 1.564955473e-06,
+    "variation_m5_pct": -99.09,
+    "volume_m5_usd": 14690.5287432219,
+    "buys_m5": 4,
+    "sells_m5": 2347,
+    "buyers_m5": 4,
+    "sellers_m5": 2347,
+    "variation_m15_pct": -98.953,
+    "volume_m15_usd": 18239.1972929296,
+    "buys_m15": 3389,
+    "sells_m15": 2763,
+    "buyers_m15": 141,
+    "sellers_m15": 2350,
+    "variation_m30_pct": -97.432,
+    "volume_m30_usd": 28302.2344685908,
+    "buys_m30": 7032,
+    "sells_m30": 3092,
+    "buyers_m30": 169,
+    "sellers_m30": 2365,
+    "variation_h1_pct": -97.43,
+    "volume_h1_usd": 28302.2344685908,
+    "buys_h1": 7032,
+    "sells_h1": 3092,
+    "buyers_h1": 169,
+    "sellers_h1": 2365,
+    "variation_h6_pct": -97.43,
+    "volume_h6_usd": 28302.2344685908,
+    "buys_h6": 7032,
+    "sells_h6": 3092,
+    "buyers_h6": 169,
+    "sellers_h6": 2365
+   },
+   {
+    "mint": "ChGCmZKqk24zuEa4euyhBGsgLuxPuKrzpLxgaygnHMPb",
+    "pool": "DqiVCgkDLLt1yVEv5oBB55hXm4dryo39JYBzDT7Esstu",
+    "nom": "GTA 6 Coin / SOL",
+    "dex": "pump-fun",
+    "cree_le": "2026-11-10T02:54:07Z",
+    "reserve_usd": 0.0,
+    "fdv_usd": 2706.3223062806,
+    "capitalisation_usd": null,
+    "prix_usd": 2.740339011e-06,
+    "variation_m5_pct": 0.0,
+    "volume_m5_usd": 0.0,
+    "buys_m5": 0,
+    "sells_m5": 0,
+    "buyers_m5": 0,
+    "sellers_m5": 0,
+    "variation_m15_pct": 0.0,
+    "volume_m15_usd": 0.0,
+    "buys_m15": 0,
+    "sells_m15": 0,
+    "buyers_m15": 0,
+    "sellers_m15": 0,
+    "variation_m30_pct": 0.0,
+    "volume_m30_usd": 7323.0510485142,
+    "buys_m30": 7,
+    "sells_m30": 0,
+    "buyers_m30": 3,
+    "sellers_m30": 0,
+    "variation_h1_pct": 0.0,
+    "volume_h1_usd": 7323.0510485142,
+    "buys_h1": 7,
+    "sells_h1": 0,
+    "buyers_h1": 3,
+    "sellers_h1": 0,
+    "variation_h6_pct": 0.0,
+    "volume_h6_usd": 7323.0510485142,
+    "buys_h6": 7,
+    "sells_h6": 0,
+    "buyers_h6": 3,
+    "sellers_h6": 0
+   }
+  ],
+  "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/ChGCmZKqk24zuEa4euyhBGsgLuxPuKrzpLxgaygnHMPb/pools?page=1",
+  "releve_le": "2026-11-10T03:21:11Z",
+  "absent": false,
+  "reserve_totale_usd": 1550.73,
+  "dex": [
+   "pump-fun",
+   "pumpswap"
+  ],
+  "nb_pools": 2,
+  "sur_courbe": false,
+  "gradue": true
+ },
+ "rugcheck": {
+  "resume": {
+   "detenteurs_total": 27,
+   "top10_pct_hors_pools": 0.056,
+   "top_parts_pct": [
+    0.056,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "top20": [
+    {
+     "part_pct": 0.056,
+     "initie": false
+    },
+    {
+     "part_pct": 0.0,
+     "initie": false
+    },
+    {
+     "part_pct": 0.0,
+     "initie": false
+    },
+    {
+     "part_pct": 0.0,
+     "initie": false
+    },
+    {
+     "part_pct": 0.0,
+     "initie": false
+    },
+    {
+     "part_pct": 0.0,
+     "initie": false
+    }
+   ],
+   "top_initie": 0,
+   "createur_part_pct": 0.0,
+   "autorite_emission_renoncee": true,
+   "autorite_gel_renoncee": true,
+   "reseaux_inities": 0,
+   "reseaux_inities_comptes": 0,
+   "reseaux_inities_part_pct": 0.0,
+   "inities_detectes_graphe": 0,
+   "risques": [
+    "Low Liquidity (danger)"
+   ],
+   "marque_rugged": false,
+   "liquidite_marches_usd": 1552.2313294668786,
+   "marches": 2,
+   "plateforme": "pump_fun",
+   "jetons_du_createur": null
+  },
+  "url": "https://api.rugcheck.xyz/v1/tokens/ChGCmZKqk24zuEa4euyhBGsgLuxPuKrzpLxgaygnHMPb/report",
+  "releve_le": "2026-11-10T03:21:11Z"
+ },
+ "bougies": {
+  "bougies": [
+   {
+    "t": 1794279000,
+    "ouverture": 0.0001022752297827705,
+    "haut": 0.00010646750898588933,
+    "bas": 3.583124592636573e-05,
+    "cloture": 0.00010574892463553355,
+    "volume_usd": 5604.9203420553495
+   },
+   {
+    "t": 1794279300,
+    "ouverture": 0.00010574892463553355,
+    "haut": 0.00013426052692895688,
+    "bas": 0.00010482997679680172,
+    "cloture": 0.00013426052692895688,
+    "volume_usd": 2793.091984041983
+   },
+   {
+    "t": 1794279600,
+    "ouverture": 0.00013426052692895688,
+    "haut": 0.00015158506296839767,
+    "bas": 0.00013329588288863432,
+    "cloture": 0.00015158506296839767,
+    "volume_usd": 1665.0248495638184
+   },
+   {
+    "t": 1794279900,
+    "ouverture": 0.00015158506296839767,
+    "haut": 0.00017600453636141983,
+    "bas": 0.000149461668919389,
+    "cloture": 0.0001728871372024319,
+    "volume_usd": 1931.1534933556402
+   },
+   {
+    "t": 1794280200,
+    "ouverture": 0.0001728871372024319,
+    "haut": 0.00018287833384009444,
+    "bas": 0.00016755254817768143,
+    "cloture": 0.00017720550868869045,
+    "volume_usd": 1618.8686450689097
+   },
+   {
+    "t": 1794280500,
+    "ouverture": 0.00017720550868869045,
+    "haut": 0.00017720550868869045,
+    "bas": 1.5421854893843389e-06,
+    "cloture": 1.564955472539537e-06,
+    "volume_usd": 14690.528743221936
+   }
+  ],
+  "url": "https://api.geckoterminal.com/api/v2/networks/solana/pools/9yJb8YG7rr8J21tvKqEioSSvbbMAX3Doqm9d2UNTLgdF/ohlcv/minute?aggregate=5&limit=48&currency=usd",
+  "releve_le": "2026-11-10T03:21:18Z"
+ },
+ "vivier": {
+  "mint": "ChGCmZKqk24zuEa4euyhBGsgLuxPuKrzpLxgaygnHMPb",
+  "pool": "9yJb8YG7rr8J21tvKqEioSSvbbMAX3Doqm9d2UNTLgdF",
+  "nom": "GTA 6 Coin / SOL",
+  "dex": "pumpswap",
+  "cree_le": "2026-11-10T02:54:07Z",
+  "vu_le": "2026-11-10T02:54:47Z",
+  "reserve_usd": 11088.5033,
+  "source_url": "https://api.geckoterminal.com/api/v2/networks/solana/new_pools?include=base_token&page=1"
+ },
+ "faits": [
+  {
+   "n": 1,
+   "producteur": "GeckoTerminal",
+   "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/ChGCmZKqk24zuEa4euyhBGsgLuxPuKrzpLxgaygnHMPb/pools?page=1",
+   "releve_le": "2026-11-10T03:21:11Z",
+   "champ": "data[].attributes.reserve_in_usd",
+   "texte": "réserve totale des pools du jeton : 1 551 $ (2 pool(s) ; plateformes : pump-fun, pumpswap ; encore sur courbe de lancement : non)"
+  },
+  {
+   "n": 2,
+   "producteur": "GeckoTerminal",
+   "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/ChGCmZKqk24zuEa4euyhBGsgLuxPuKrzpLxgaygnHMPb/pools?page=1",
+   "releve_le": "2026-11-10T03:21:11Z",
+   "champ": "data[].attributes.pool_created_at",
+   "texte": "pool principal (pumpswap) créé le 2026-11-10T02:54:07Z ; âge au relevé : 27.1 min"
+  },
+  {
+   "n": 3,
+   "producteur": "GeckoTerminal",
+   "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/ChGCmZKqk24zuEa4euyhBGsgLuxPuKrzpLxgaygnHMPb/pools?page=1",
+   "releve_le": "2026-11-10T03:21:11Z",
+   "champ": "data[].attributes.fdv_usd",
+   "texte": "valorisation totale diluée : 1 546 $ ; prix : 1.565e-06 $"
+  },
+  {
+   "n": 4,
+   "producteur": "GeckoTerminal",
+   "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/ChGCmZKqk24zuEa4euyhBGsgLuxPuKrzpLxgaygnHMPb/pools?page=1",
+   "releve_le": "2026-11-10T03:21:11Z",
+   "champ": "data[].attributes.transactions.m5",
+   "texte": "sur les 5 dernières minutes : 4 achats par 4 acheteurs, 2347 ventes par 2347 vendeurs ; volume 1.469e+04 $ ; variation du prix -99.09 %"
+  },
+  {
+   "n": 5,
+   "producteur": "GeckoTerminal",
+   "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/ChGCmZKqk24zuEa4euyhBGsgLuxPuKrzpLxgaygnHMPb/pools?page=1",
+   "releve_le": "2026-11-10T03:21:11Z",
+   "champ": "data[].attributes.transactions.m15",
+   "texte": "sur les 15 dernières minutes : 3389 achats par 141 acheteurs, 2763 ventes par 2350 vendeurs ; volume 1.824e+04 $ ; variation du prix -98.95 %"
+  },
+  {
+   "n": 6,
+   "producteur": "GeckoTerminal",
+   "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/ChGCmZKqk24zuEa4euyhBGsgLuxPuKrzpLxgaygnHMPb/pools?page=1",
+   "releve_le": "2026-11-10T03:21:11Z",
+   "champ": "data[].attributes.transactions.m30",
+   "texte": "sur les 30 dernières minutes : 7032 achats par 169 acheteurs, 3092 ventes par 2365 vendeurs ; volume 2.83e+04 $ ; variation du prix -97.43 %"
+  },
+  {
+   "n": 7,
+   "producteur": "GeckoTerminal",
+   "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/ChGCmZKqk24zuEa4euyhBGsgLuxPuKrzpLxgaygnHMPb/pools?page=1",
+   "releve_le": "2026-11-10T03:21:11Z",
+   "champ": "data[].attributes.transactions.h1",
+   "texte": "sur la dernière heure : 7032 achats par 169 acheteurs, 3092 ventes par 2365 vendeurs ; volume 2.83e+04 $ ; variation du prix -97.43 %"
+  },
+  {
+   "n": 8,
+   "producteur": "GeckoTerminal",
+   "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/ChGCmZKqk24zuEa4euyhBGsgLuxPuKrzpLxgaygnHMPb/pools?page=1",
+   "releve_le": "2026-11-10T03:21:11Z",
+   "champ": "data[].attributes.transactions.h6",
+   "texte": "sur les 6 dernières heures : 7032 achats par 169 acheteurs, 3092 ventes par 2365 vendeurs ; volume 2.83e+04 $ ; variation du prix -97.43 %"
+  },
+  {
+   "n": 9,
+   "producteur": "GeckoTerminal",
+   "url": "https://api.geckoterminal.com/api/v2/networks/solana/pools/9yJb8YG7rr8J21tvKqEioSSvbbMAX3Doqm9d2UNTLgdF/ohlcv/minute?aggregate=5&limit=48&currency=usd",
+   "releve_le": "2026-11-10T03:21:18Z",
+   "champ": "data.attributes.ohlcv_list",
+   "texte": "série des bougies de 5 minutes du pool principal, de la plus ancienne à la plus récente (6 mesures ; heure UTC, prix de clôture / volume) : 02:50 0.0001057 $ / 5 605 $ ; 02:55 0.0001343 $ / 2 793 $ ; 03:00 0.0001516 $ / 1 665 $ ; 03:05 0.0001729 $ / 1 931 $ ; 03:10 0.0001772 $ / 1 619 $ ; 03:15 1.565e-06 $ / 1.469e+04 $"
+  },
+  {
+   "n": 10,
+   "producteur": "RugCheck",
+   "url": "https://api.rugcheck.xyz/v1/tokens/ChGCmZKqk24zuEa4euyhBGsgLuxPuKrzpLxgaygnHMPb/report",
+   "releve_le": "2026-11-10T03:21:11Z",
+   "champ": "totalHolders",
+   "texte": "nombre de détenteurs : 27"
+  },
+  {
+   "n": 11,
+   "producteur": "RugCheck",
+   "url": "https://api.rugcheck.xyz/v1/tokens/ChGCmZKqk24zuEa4euyhBGsgLuxPuKrzpLxgaygnHMPb/report",
+   "releve_le": "2026-11-10T03:21:11Z",
+   "champ": "topHolders[].pct",
+   "texte": "les 10 premiers portefeuilles (pools et verrous exclus) détiennent 0.056 % de l'offre ; parts une à une (%) : [0.056, 0.0, 0.0, 0.0, 0.0, 0.0] ; dont marqués initiés : 0"
+  },
+  {
+   "n": 12,
+   "producteur": "RugCheck",
+   "url": "https://api.rugcheck.xyz/v1/tokens/ChGCmZKqk24zuEa4euyhBGsgLuxPuKrzpLxgaygnHMPb/report",
+   "releve_le": "2026-11-10T03:21:11Z",
+   "champ": "topHolders[].pct, topHolders[].insider",
+   "texte": "distribution des 20 premiers portefeuilles (pools et verrous exclus), part de l'offre en % (* = marqué initié) : 0.056, 0.0, 0.0, 0.0, 0.0, 0.0"
+  },
+  {
+   "n": 13,
+   "producteur": "RugCheck",
+   "url": "https://api.rugcheck.xyz/v1/tokens/ChGCmZKqk24zuEa4euyhBGsgLuxPuKrzpLxgaygnHMPb/report",
+   "releve_le": "2026-11-10T03:21:11Z",
+   "champ": "creatorBalance / token.supply",
+   "texte": "part de l'offre encore détenue par le créateur : 0 % (creatorBalance / supply, calculé par le banc)"
+  },
+  {
+   "n": 14,
+   "producteur": "RugCheck",
+   "url": "https://api.rugcheck.xyz/v1/tokens/ChGCmZKqk24zuEa4euyhBGsgLuxPuKrzpLxgaygnHMPb/report",
+   "releve_le": "2026-11-10T03:21:11Z",
+   "champ": "mintAuthority, freezeAuthority",
+   "texte": "autorité d'émission renoncée : oui ; autorité de gel renoncée : oui"
+  },
+  {
+   "n": 15,
+   "producteur": "RugCheck",
+   "url": "https://api.rugcheck.xyz/v1/tokens/ChGCmZKqk24zuEa4euyhBGsgLuxPuKrzpLxgaygnHMPb/report",
+   "releve_le": "2026-11-10T03:21:11Z",
+   "champ": "insiderNetworks[], graphInsidersDetected",
+   "texte": "réseaux d'initiés détectés : 0 (0 comptes actifs ; part de l'offre : 0 %) ; initiés détectés par le graphe des transferts : 0"
+  },
+  {
+   "n": 16,
+   "producteur": "RugCheck",
+   "url": "https://api.rugcheck.xyz/v1/tokens/ChGCmZKqk24zuEa4euyhBGsgLuxPuKrzpLxgaygnHMPb/report",
+   "releve_le": "2026-11-10T03:21:11Z",
+   "champ": "risks[]",
+   "texte": "risques signalés : Low Liquidity (danger)"
+  },
+  {
+   "n": 17,
+   "producteur": "RugCheck",
+   "url": "https://api.rugcheck.xyz/v1/tokens/ChGCmZKqk24zuEa4euyhBGsgLuxPuKrzpLxgaygnHMPb/report",
+   "releve_le": "2026-11-10T03:21:11Z",
+   "champ": "launchpad, creatorTokens",
+   "texte": "plateforme de lancement : pump_fun ; autres jetons lancés par le créateur : non fourni par la source"
+  },
+  {
+   "n": 18,
+   "producteur": "RugCheck",
+   "url": "https://api.rugcheck.xyz/v1/tokens/ChGCmZKqk24zuEa4euyhBGsgLuxPuKrzpLxgaygnHMPb/report",
+   "releve_le": "2026-11-10T03:21:11Z",
+   "champ": "rugged, totalMarketLiquidity, markets",
+   "texte": "marqué « rugged » par la source : non ; liquidité de marché selon RugCheck : 1 552 $ sur 2 marché(s)"
+  }
+ ]
+}
