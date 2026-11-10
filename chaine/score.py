@@ -35,6 +35,21 @@ def _sequence(d: list[float]) -> dict | None:
         return {"erreur": f"{type(e).__name__}: {e}"[:200]}
 
 
+def complements(paires: list[tuple[float, bool]]) -> dict | None:
+    """Brier moyen et calibration par tranche de probabilité (0–0,1, …, 0,9–1) : effectif, prévision moyenne,
+    fréquence observée."""
+    if not paires:
+        return None
+    brier = sum((p - (1.0 if o else 0.0)) ** 2 for p, o in paires) / len(paires)
+    tranches: dict[str, list] = {}
+    for p, o in paires:
+        k = min(9, int(float(p) * 10))
+        tranches.setdefault(f"{k / 10:.1f}–{(k + 1) / 10:.1f}", []).append((p, o))
+    return {"n": len(paires), "brier": round(brier, 4),
+            "calibration": {k: {"n": len(v), "prevu": round(sum(p for p, _ in v) / len(v), 3),
+                                "observe": round(sum(o for _, o in v) / len(v), 3)} for k, v in sorted(tranches.items())}}
+
+
 def scorer(racine=None) -> dict:
     prev = {p["id"]: p for p in registre.lire("previsions.jsonl", racine)}
     rapport: dict = {"par_type": {}}
@@ -51,6 +66,7 @@ def scorer(racine=None) -> dict:
             oui = i["issue"] == "oui"
             b = p["bras"]
             lignes.append({"rodage": b["B"].get("rodage", True), "oui": oui,
+                           "p": {k: b[k].get("p") for k in ("A", "B", "C")},
                            "A": perte(b["A"].get("p"), oui), "B": perte(b["B"].get("p"), oui),
                            "C": perte(b["C"].get("p"), oui), "statut_C": b["C"].get("statut")})
         comptees = [x for x in lignes if not x["rodage"]]
@@ -70,6 +86,10 @@ def scorer(racine=None) -> dict:
                 d = [x["C"] - x[ref] for x in avec_c if x[ref] is not None]
                 t[f"C_moins_{ref}"] = {"n": len(d), "moyenne": round(sum(d) / len(d), 4) if d else None,
                                        "sequence_confiance": _sequence(d) if d else None}
+        # Complément descriptif (Paleka et al., ICLR 2026 : chaque métrique a son défaut ; rapporter log, Brier et
+        # calibration ensemble). Le critère du protocole reste la perte log (§5) ; ces chiffres ne le remplacent pas.
+        t["complements"] = {k: complements([(x["p"][k], x["oui"]) for x in comptees if x["p"][k] is not None])
+                            for k in ("A", "B", "C")}
         n = len(comptees)
         t["etape"] = ("critère atteint : verdict lisible" if n >= CRITERE else
                       "bilan d'étape : contrôle de fonctionnement, aucune conclusion" if n >= ETAPE else

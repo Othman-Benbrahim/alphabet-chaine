@@ -193,6 +193,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(t["comptees"], 40)
         self.assertLess(t["C_moins_B"]["moyenne"], 0)
         self.assertIn("verdict", t["C_moins_B"]["sequence_confiance"])
+        self.assertEqual(t["complements"]["C"]["n"], 40)                    # Brier et calibration en complément
+        self.assertIn("0.6–0.7", t["complements"]["C"]["calibration"])
         self.assertEqual(t["etape"], "bilan d'étape : contrôle de fonctionnement, aucune conclusion")
 
 
