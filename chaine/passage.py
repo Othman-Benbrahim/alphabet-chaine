@@ -33,6 +33,7 @@ RESERVE_MIN = 1000.0                # $ : éligibilité minimale (décision du 2
 DETENTEURS_MIN = 20                 # protocole 2 : un jeton sans activité n'a pas de structure à lire
 TRANSACTIONS_H1_MIN = 10
 DELAI_ABANDON_H = 48                # une issue impossible à relever 48 h après l'échéance : « non_resolue »
+PREFIXE_LECTEUR = os.environ.get("CHAINE_PREFIXE_LECTEUR", "openai/")   # la passerelle Fantasy
 
 
 def maintenant() -> str:
@@ -163,6 +164,13 @@ def lancer_llm():
     """Modèle principal du passage, choisi comme dans le bot (premier de la suite ALPHABET_LLM qui répond)."""
     import alphabet_modeles as am
     from alphabet_bot import configuration
+    # Un seul lecteur pour tout le banc : les modèles de la passerelle (préfixe « openai/ »), jamais le secours
+    # d'un autre fournisseur (le 2026-11-10, Mistral Large en secours a inventé l'issue comme fait). Si la passerelle
+    # est saturée, on l'attend (sondes espacées de 1 à 5 min, environ 15 min au plus) au lieu de changer de lecteur.
+    for var in ("ALPHABET_LLM", "ALPHABET_PETIT_LLM"):
+        gardes = [m for m in am.suite(os.environ.get(var)) if m.startswith(PREFIXE_LECTEUR)]
+        os.environ[var] = ",".join(gardes)
+    os.environ.setdefault("ALPHABET_SONDE_TOURS", "6")
     choix, essais = asyncio.run(am.choisir())
     for e_ in essais:
         print(f"{'✅' if e_['json_ok'] else '❌'}  {e_['role']} : {e_['modele']}" + (f" — {e_['erreur']}" if e_['erreur'] else ""))
@@ -205,8 +213,9 @@ def main() -> int:
         if lot and not args.sans_prevision:
             llm, modeles = lancer_llm()
             if llm is None:
-                passage.update(statut="sans_modele")
-                return 1
+                print("⏸️  passerelle saturée après ~15 min d'attente : aucune prévision ce passage (issues relevées)")
+                passage.update(statut="sans_modele", issues=len(issues), vivier_ajouts=n, eligibles=len(cands))
+                return 0
 
             async def tous() -> list[dict]:
                 sortie, retenus = [], 0
