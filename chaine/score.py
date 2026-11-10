@@ -14,7 +14,7 @@ import math
 
 from . import registre
 
-PROTOCOLE = 2     # seules les questions du protocole en vigueur entrent dans le score ; les autres sont comptées à part
+PROTOCOLE = 3     # seules les questions du protocole en vigueur entrent dans le score ; les autres sont comptées à part
 CRITERE = 200     # questions résolues par type (protocole §6)
 ETAPE = 30        # bilan d'étape, sans conclusion
 ECHELLE = 2 * math.log(1000)

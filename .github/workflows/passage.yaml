@@ -59,6 +59,7 @@ jobs:
           ALPHABET_LLM: ${{ vars.ALPHABET_LLM }}
           ALPHABET_PETIT_LLM: ${{ vars.ALPHABET_PETIT_LLM }}
           ALPHABET_BOT: .
+          ALPHABET_EQUIV_DONNEES: "1"     # skill 0.7.55, §32 : équivalents de données des jetons
           ALPHABET_REGISTRE: ${{ runner.temp }}/registre-bot
           CHAINE_REGISTRE: ${{ github.workspace }}/registre
         run: |

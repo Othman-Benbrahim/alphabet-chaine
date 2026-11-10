@@ -1,7 +1,7 @@
 # Protocole du banc — l'alphabet sans texte
 
-> Version 2, fixée le 2026-11-10 après un seul passage de rodage (5 questions de la version 1, scorées à part et
-> exclues du taux de base). Toute modification = nouvelle version, scorée à part
+> Version 3, fixée le 2026-11-10 après deux passages de rodage (7 questions des versions 1 et 2, scorées à part et
+> exclues du taux de base). Version 3 : la lecture reçoit les équivalents de données des jetons (skill 0.7.55, §32). Toute modification = nouvelle version, scorée à part
 > (`version_banc` dans chaque ligne du registre).
 
 ## 1. Hypothèse
@@ -40,6 +40,8 @@ Les faits sont des **faits de série** (skill 0.7.54, §31) : champ, valeur, pro
 les relevés comprennent la **série des bougies de 5 minutes** du pool principal (prix, volume, depuis la création,
 au plus 4 h), les **fenêtres de transactions** de 5 min à 6 h et la **distribution des 20 premiers portefeuilles** ;
 un en-tête neutre dit que les relevés [Dn] sont les seuls faits, sans nommer aucune carte.
+Version 3 : la lecture reçoit aussi `references/equivalences/donnees-chaine.md` (skill 0.7.55, §32), qui dit
+quel relevé vaut marqueur pour dix cartes et laisse six cartes Vides.
 Pas de C = B : sans carte ancrée, pas de chiffre C.
 
 ## 4. Intégrité

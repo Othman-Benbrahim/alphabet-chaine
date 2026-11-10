@@ -112,9 +112,9 @@ class Tests(unittest.TestCase):
         self.assertNotIn("None", t)
 
     def test_taux_de_base_sans_avenir(self):
-        prev = [{"id": "a", "type": "R", "protocole": 2, "releve_le": "2026-11-01T00:00:00Z"},
-                {"id": "b", "type": "R", "protocole": 2, "releve_le": "2026-11-01T01:00:00Z"},
-                {"id": "v1", "type": "R", "releve_le": "2026-11-01T01:00:00Z"}]      # protocole 1 : hors de B
+        prev = [{"id": "a", "type": "R", "protocole": 3, "releve_le": "2026-11-01T00:00:00Z"},
+                {"id": "b", "type": "R", "protocole": 3, "releve_le": "2026-11-01T01:00:00Z"},
+                {"id": "v1", "type": "R", "releve_le": "2026-11-01T01:00:00Z"}]      # autre protocole : hors de B
         iss = [{"id": "a", "issue": "oui", "releve_le": "2026-11-02T00:00:00Z"},
                {"id": "b", "issue": "non", "releve_le": "2026-11-02T05:00:00Z"},
                {"id": "v1", "issue": "oui", "releve_le": "2026-11-02T00:00:00Z"}]
@@ -148,7 +148,7 @@ class Tests(unittest.TestCase):
         self.assertIn("RELEVÉS DE DONNÉES (banc sans texte)", llm.consignes[2])
         self.assertIn("série des bougies de 5 minutes", llm.consignes[2])
         self.assertIn("distribution des 20 premiers portefeuilles", llm.consignes[2])
-        self.assertEqual(r["protocole"], 2)
+        self.assertEqual(r["protocole"], 3)
         self.assertTrue((self.reg / r["instantane"]).is_file())
         # Issues 24 h plus tard : réserve divisée par 10 (vidage), graduation.
         c2 = client(reserve_facteur=0.1, graduer=True)
@@ -180,7 +180,7 @@ class Tests(unittest.TestCase):
         prev, iss = [], []
         for n in range(40):
             oui = n % 4 == 0
-            prev.append({"id": str(n), "type": "R", "protocole": 2, "releve_le": f"2026-11-01T{n % 24:02d}:00:00Z",
+            prev.append({"id": str(n), "type": "R", "protocole": 3, "releve_le": f"2026-11-01T{n % 24:02d}:00:00Z",
                          "bras": {"A": {"p": 0.5}, "B": {"p": 0.25, "rodage": False},
                                   "C": {"p": 0.6 if oui else 0.1, "statut": "estime"}}})
             iss.append({"id": str(n), "issue": "oui" if oui else "non", "releve_le": "2026-11-05T00:00:00Z"})

@@ -15,7 +15,7 @@ Llm = Callable[[str], Awaitable[str]]
 RODAGE = 30           # questions résolues du même type avant que B compte comme « établi » (protocole §6)
 SEUIL_VIDAGE = 0.20   # R : réserve totale sous 20 % de celle de l'instantané (protocole §2)
 HORIZON_H = 24
-PROTOCOLE = 2         # B ne compte que les questions du protocole en vigueur (même population de jetons)
+PROTOCOLE = 3         # B ne compte que les questions du protocole en vigueur (même population de jetons)
 
 
 def echeance(releve_le: str) -> str:
