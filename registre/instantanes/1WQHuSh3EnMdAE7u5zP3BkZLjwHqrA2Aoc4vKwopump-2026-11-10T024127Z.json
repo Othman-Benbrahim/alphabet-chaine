@@ -1,0 +1,197 @@
+{
+ "mint": "1WQHuSh3EnMdAE7u5zP3BkZLjwHqrA2Aoc4vKwopump",
+ "symbole": "Rugsey",
+ "releve_le": "2026-11-10T02:41:27Z",
+ "pools": {
+  "pools": [
+   {
+    "mint": "1WQHuSh3EnMdAE7u5zP3BkZLjwHqrA2Aoc4vKwopump",
+    "pool": "HZ5Kqja98bYPWCpwKKiBccu9Wm7YC18Lr5PCDQzybSr1",
+    "nom": "Rugsey / ANSEM",
+    "dex": "pump-fun",
+    "cree_le": "2026-11-10T02:22:48Z",
+    "reserve_usd": 2510.6432,
+    "fdv_usd": 3164.259481,
+    "capitalisation_usd": null,
+    "prix_usd": 3.164259481e-06,
+    "variation_m5_pct": 0.0,
+    "volume_m5_usd": 0.0,
+    "buys_m5": 0,
+    "sells_m5": 0,
+    "buyers_m5": 0,
+    "sellers_m5": 0,
+    "variation_h1_pct": -0.21,
+    "volume_h1_usd": 168.051237694,
+    "buys_h1": 1,
+    "sells_h1": 1,
+    "buyers_h1": 1,
+    "sellers_h1": 1,
+    "variation_h6_pct": -0.21,
+    "volume_h6_usd": 168.051237694,
+    "buys_h6": 1,
+    "sells_h6": 1,
+    "buyers_h6": 1,
+    "sellers_h6": 1
+   }
+  ],
+  "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/1WQHuSh3EnMdAE7u5zP3BkZLjwHqrA2Aoc4vKwopump/pools?page=1",
+  "releve_le": "2026-11-10T02:41:26Z",
+  "absent": false,
+  "reserve_totale_usd": 2510.64,
+  "dex": [
+   "pump-fun"
+  ],
+  "nb_pools": 1,
+  "sur_courbe": true,
+  "gradue": false
+ },
+ "rugcheck": {
+  "resume": {
+   "detenteurs_total": 2,
+   "top10_pct_hors_pools": 0.0,
+   "top_parts_pct": [
+    0.0
+   ],
+   "top_initie": 0,
+   "createur_part_pct": 0.0,
+   "autorite_emission_renoncee": true,
+   "autorite_gel_renoncee": true,
+   "reseaux_inities": 0,
+   "reseaux_inities_comptes": 0,
+   "reseaux_inities_part_pct": 0.0,
+   "inities_detectes_graphe": 0,
+   "risques": [],
+   "marque_rugged": false,
+   "liquidite_marches_usd": 8.590118617964454e-08,
+   "marches": 1,
+   "plateforme": "pump_fun",
+   "jetons_du_createur": null
+  },
+  "url": "https://api.rugcheck.xyz/v1/tokens/1WQHuSh3EnMdAE7u5zP3BkZLjwHqrA2Aoc4vKwopump/report",
+  "releve_le": "2026-11-10T02:41:27Z"
+ },
+ "vivier": {
+  "mint": "1WQHuSh3EnMdAE7u5zP3BkZLjwHqrA2Aoc4vKwopump",
+  "pool": "HZ5Kqja98bYPWCpwKKiBccu9Wm7YC18Lr5PCDQzybSr1",
+  "nom": "Rugsey / ANSEM",
+  "dex": "pump-fun",
+  "cree_le": "2026-11-10T02:22:48Z",
+  "vu_le": "2026-11-10T02:25:04Z",
+  "reserve_usd": 2509.4755,
+  "source_url": "https://api.geckoterminal.com/api/v2/networks/solana/new_pools?include=base_token&page=1"
+ },
+ "faits": [
+  {
+   "n": 1,
+   "producteur": "GeckoTerminal",
+   "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/1WQHuSh3EnMdAE7u5zP3BkZLjwHqrA2Aoc4vKwopump/pools?page=1",
+   "releve_le": "2026-11-10T02:41:26Z",
+   "champ": "data[].attributes.reserve_in_usd",
+   "texte": "réserve totale des pools du jeton : 2 511 $ (1 pool(s) ; plateformes : pump-fun ; encore sur courbe de lancement : oui)"
+  },
+  {
+   "n": 2,
+   "producteur": "GeckoTerminal",
+   "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/1WQHuSh3EnMdAE7u5zP3BkZLjwHqrA2Aoc4vKwopump/pools?page=1",
+   "releve_le": "2026-11-10T02:41:26Z",
+   "champ": "data[].attributes.pool_created_at",
+   "texte": "pool principal (pump-fun) créé le 2026-11-10T02:22:48Z ; âge au relevé : 18.6 min"
+  },
+  {
+   "n": 3,
+   "producteur": "GeckoTerminal",
+   "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/1WQHuSh3EnMdAE7u5zP3BkZLjwHqrA2Aoc4vKwopump/pools?page=1",
+   "releve_le": "2026-11-10T02:41:26Z",
+   "champ": "data[].attributes.fdv_usd",
+   "texte": "valorisation totale diluée : 3 164 $ ; prix : 3.164e-06 $"
+  },
+  {
+   "n": 4,
+   "producteur": "GeckoTerminal",
+   "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/1WQHuSh3EnMdAE7u5zP3BkZLjwHqrA2Aoc4vKwopump/pools?page=1",
+   "releve_le": "2026-11-10T02:41:26Z",
+   "champ": "data[].attributes.transactions.m5",
+   "texte": "sur les 5 dernières minutes : 0 achats par 0 acheteurs, 0 ventes par 0 vendeurs ; volume 0 $ ; variation du prix 0 %"
+  },
+  {
+   "n": 5,
+   "producteur": "GeckoTerminal",
+   "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/1WQHuSh3EnMdAE7u5zP3BkZLjwHqrA2Aoc4vKwopump/pools?page=1",
+   "releve_le": "2026-11-10T02:41:26Z",
+   "champ": "data[].attributes.transactions.h1",
+   "texte": "sur les dernière heure : 1 achats par 1 acheteurs, 1 ventes par 1 vendeurs ; volume 168.1 $ ; variation du prix -0.21 %"
+  },
+  {
+   "n": 6,
+   "producteur": "GeckoTerminal",
+   "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/1WQHuSh3EnMdAE7u5zP3BkZLjwHqrA2Aoc4vKwopump/pools?page=1",
+   "releve_le": "2026-11-10T02:41:26Z",
+   "champ": "data[].attributes.transactions.h6",
+   "texte": "sur les 6 dernières heures : 1 achats par 1 acheteurs, 1 ventes par 1 vendeurs ; volume 168.1 $ ; variation du prix -0.21 %"
+  },
+  {
+   "n": 7,
+   "producteur": "RugCheck",
+   "url": "https://api.rugcheck.xyz/v1/tokens/1WQHuSh3EnMdAE7u5zP3BkZLjwHqrA2Aoc4vKwopump/report",
+   "releve_le": "2026-11-10T02:41:27Z",
+   "champ": "totalHolders",
+   "texte": "nombre de détenteurs : 2"
+  },
+  {
+   "n": 8,
+   "producteur": "RugCheck",
+   "url": "https://api.rugcheck.xyz/v1/tokens/1WQHuSh3EnMdAE7u5zP3BkZLjwHqrA2Aoc4vKwopump/report",
+   "releve_le": "2026-11-10T02:41:27Z",
+   "champ": "topHolders[].pct",
+   "texte": "les 10 premiers portefeuilles (pools et verrous exclus) détiennent 0 % de l'offre ; parts une à une (%) : [0.0] ; dont marqués initiés : 0"
+  },
+  {
+   "n": 9,
+   "producteur": "RugCheck",
+   "url": "https://api.rugcheck.xyz/v1/tokens/1WQHuSh3EnMdAE7u5zP3BkZLjwHqrA2Aoc4vKwopump/report",
+   "releve_le": "2026-11-10T02:41:27Z",
+   "champ": "creatorBalance / token.supply",
+   "texte": "part de l'offre encore détenue par le créateur : 0 % (creatorBalance / supply, calculé par le banc)"
+  },
+  {
+   "n": 10,
+   "producteur": "RugCheck",
+   "url": "https://api.rugcheck.xyz/v1/tokens/1WQHuSh3EnMdAE7u5zP3BkZLjwHqrA2Aoc4vKwopump/report",
+   "releve_le": "2026-11-10T02:41:27Z",
+   "champ": "mintAuthority, freezeAuthority",
+   "texte": "autorité d'émission renoncée : oui ; autorité de gel renoncée : oui"
+  },
+  {
+   "n": 11,
+   "producteur": "RugCheck",
+   "url": "https://api.rugcheck.xyz/v1/tokens/1WQHuSh3EnMdAE7u5zP3BkZLjwHqrA2Aoc4vKwopump/report",
+   "releve_le": "2026-11-10T02:41:27Z",
+   "champ": "insiderNetworks[], graphInsidersDetected",
+   "texte": "réseaux d'initiés détectés : 0 (0 comptes actifs ; part de l'offre : 0 %) ; initiés détectés par le graphe des transferts : 0"
+  },
+  {
+   "n": 12,
+   "producteur": "RugCheck",
+   "url": "https://api.rugcheck.xyz/v1/tokens/1WQHuSh3EnMdAE7u5zP3BkZLjwHqrA2Aoc4vKwopump/report",
+   "releve_le": "2026-11-10T02:41:27Z",
+   "champ": "risks[]",
+   "texte": "risques signalés : aucun"
+  },
+  {
+   "n": 13,
+   "producteur": "RugCheck",
+   "url": "https://api.rugcheck.xyz/v1/tokens/1WQHuSh3EnMdAE7u5zP3BkZLjwHqrA2Aoc4vKwopump/report",
+   "releve_le": "2026-11-10T02:41:27Z",
+   "champ": "launchpad, creatorTokens",
+   "texte": "plateforme de lancement : pump_fun ; autres jetons lancés par le créateur : non fourni par la source"
+  },
+  {
+   "n": 14,
+   "producteur": "RugCheck",
+   "url": "https://api.rugcheck.xyz/v1/tokens/1WQHuSh3EnMdAE7u5zP3BkZLjwHqrA2Aoc4vKwopump/report",
+   "releve_le": "2026-11-10T02:41:27Z",
+   "champ": "rugged, totalMarketLiquidity, markets",
+   "texte": "marqué « rugged » par la source : non ; liquidité de marché selon RugCheck : 8.59e-08 $ sur 1 marché(s)"
+  }
+ ]
+}

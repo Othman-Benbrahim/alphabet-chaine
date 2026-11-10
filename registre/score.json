@@ -1,0 +1,27 @@
+{
+ "par_type": {
+  "R": {
+   "resolues": 0,
+   "rodage": 0,
+   "comptees": 0,
+   "taux_oui": null,
+   "couverture_C": null,
+   "statuts_C": {},
+   "perte_A": null,
+   "perte_B": null,
+   "etape": "trop tôt"
+  },
+  "G": {
+   "resolues": 0,
+   "rodage": 0,
+   "comptees": 0,
+   "taux_oui": null,
+   "couverture_C": null,
+   "statuts_C": {},
+   "perte_A": null,
+   "perte_B": null,
+   "etape": "trop tôt"
+  }
+ },
+ "lecture": "perte log : plus bas = mieux. C − B < 0 et C − A < 0, verdict « meilleur » des deux séquences à 200 questions par type : l'hypothèse tient (protocole §6)."
+}
