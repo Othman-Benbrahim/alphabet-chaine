@@ -187,7 +187,8 @@ class Tests(unittest.TestCase):
                                         "ombre_causale": {"p_mediation": 0.5 if oui else 0.15,
                                                           "p_noisy_or": 0.6 if oui else 0.1,
                                                           "tempere": [{"alpha": 0.5, "p": 0.4 if oui else 0.2}],
-                                                          "generatif": {"p": 0.5 if oui else 0.2}}}}})
+                                                          "generatif": {"p": 0.5 if oui else 0.2},
+                                                          "lecture_probabiliste": {"p": 0.55 if oui else 0.15}}}}})
             iss.append({"id": str(n), "issue": "oui" if oui else "non", "releve_le": "2026-11-05T00:00:00Z"})
         for p in prev:
             registre.ajouter("previsions.jsonl", p, self.reg)
@@ -201,7 +202,8 @@ class Tests(unittest.TestCase):
         self.assertGreater(t["C_mediation_moins_C"]["moyenne"], 0)
         self.assertEqual(t["C_noisy_or_moins_C"]["n"], 40)
         self.assertGreater(t["C_tempere_moins_C"]["moyenne"], 0)
-        self.assertEqual(t["C_generatif_moins_C"]["n"], 40)                # skill 0.7.59 : en ombre           # skill 0.7.58 : en ombre                 # skill 0.7.57 : en ombre
+        self.assertEqual(t["C_generatif_moins_C"]["n"], 40)
+        self.assertEqual(t["C_lecture_probabiliste_moins_C"]["n"], 40)     # skill 0.7.60 : en ombre                # skill 0.7.59 : en ombre           # skill 0.7.58 : en ombre                 # skill 0.7.57 : en ombre
         self.assertEqual(t["complements"]["C"]["n"], 40)                    # Brier et calibration en complément
         self.assertIn("0.6–0.7", t["complements"]["C"]["calibration"])
         self.assertEqual(t["etape"], "bilan d'étape : contrôle de fonctionnement, aucune conclusion")

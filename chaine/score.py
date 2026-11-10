@@ -70,6 +70,7 @@ def scorer(racine=None) -> dict:
                            "C_med": perte((b["C"].get("ombre_causale") or {}).get("p_mediation"), oui),
                            "C_nor": perte((b["C"].get("ombre_causale") or {}).get("p_noisy_or"), oui),
                            "C_gen": perte(((b["C"].get("ombre_causale") or {}).get("generatif") or {}).get("p"), oui),
+                           "C_lp": perte(((b["C"].get("ombre_causale") or {}).get("lecture_probabiliste") or {}).get("p"), oui),
                            "C_tmp": perte(next((t_["p"] for t_ in (b["C"].get("ombre_causale") or {}).get("tempere") or []
                                                 if t_.get("alpha") == 0.5), None), oui),
                            "A": perte(b["A"].get("p"), oui), "B": perte(b["B"].get("p"), oui),
@@ -103,6 +104,12 @@ def scorer(racine=None) -> dict:
             d = [x["C_gen"] - x["C"] for x in gen]
             t["C_generatif_moins_C"] = {"n": len(d), "moyenne": round(sum(d) / len(d), 4),
                                         "sequence_confiance": _sequence(d)}
+        # Skill 0.7.60 (§37), en ombre : lecture probabiliste (traducteur → instructions → programme génératif).
+        lp = [x for x in avec_c if x["C_lp"] is not None]
+        if lp:
+            d = [x["C_lp"] - x["C"] for x in lp]
+            t["C_lecture_probabiliste_moins_C"] = {"n": len(d), "moyenne": round(sum(d) / len(d), 4),
+                                                   "sequence_confiance": _sequence(d)}
         # Skill 0.7.58 (§35), en ombre : produit des λ à la puissance 0,5 (fixée d'avance) contre C.
         tmp = [x for x in avec_c if x["C_tmp"] is not None]
         if tmp:
