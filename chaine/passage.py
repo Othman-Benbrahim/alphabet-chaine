@@ -196,8 +196,8 @@ def main() -> int:
             cands = candidats()
         graine = int(time.time())
         # Ordre aléatoire ; on relève les jetons dans cet ordre jusqu'à en avoir `par_passage` éligibles (protocole 2),
-        # au plus 5 fois plus de relevés : le tirage reste uniforme parmi les jetons éligibles.
-        lot = random.Random(graine).sample(cands, min(5 * args.par_passage, len(cands)))
+        # au plus 10 fois plus de relevés : le tirage reste uniforme parmi les jetons éligibles.
+        lot = random.Random(graine).sample(cands, min(10 * args.par_passage, len(cands)))
         print(f"🎲  éligibles par l'âge : {len(cands)} ; ordre tiré (graine {graine}), {len(lot)} relevés au plus")
         prevues: list[dict] = []
         modeles = None
