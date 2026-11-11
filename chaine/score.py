@@ -118,7 +118,7 @@ def scorer(racine=None) -> dict:
             oui = i["issue"] == "oui"
             b = p["bras"]
             lignes.append({"rodage": b["B"].get("rodage", True), "oui": oui,
-                           "p": {k: b[k].get("p") for k in ("A", "B", "C")},
+                           "p": {k: (b.get(k) or {}).get("p") for k in ("A", "B", "C", "D")},
                            "C_med": perte((b["C"].get("ombre_causale") or {}).get("p_mediation"), oui),
                            "C_nor": perte((b["C"].get("ombre_causale") or {}).get("p_noisy_or"), oui),
                            "C_gen": perte(((b["C"].get("ombre_causale") or {}).get("generatif") or {}).get("p"), oui),
@@ -126,6 +126,7 @@ def scorer(racine=None) -> dict:
                            "C_spl": perte(((b["C"].get("ombre_causale") or {}).get("sans_plafond") or {}).get("p"), oui),
                            "C_tmp": perte(next((t_["p"] for t_ in (b["C"].get("ombre_causale") or {}).get("tempere") or []
                                                 if t_.get("alpha") == 0.5), None), oui),
+                           "D": perte((b.get("D") or {}).get("p"), oui),
                            "A": perte(b["A"].get("p"), oui), "B": perte(b["B"].get("p"), oui),
                            "C": perte(b["C"].get("p"), oui), "statut_C": b["C"].get("statut")})
         comptees = [x for x in lignes if not x["rodage"]]
@@ -145,6 +146,17 @@ def scorer(racine=None) -> dict:
                 d = [x["C"] - x[ref] for x in avec_c if x[ref] is not None]
                 t[f"C_moins_{ref}"] = {"n": len(d), "moyenne": round(sum(d) / len(d), 4) if d else None,
                                        "sequence_confiance": _sequence(d) if d else None}
+        # Banc 0.4.7, en ombre : trajectoires analogues (bras D, sans modèle de langage). C − D < 0 : la lecture
+        # alphabet apporte plus qu'une comparaison de courbes ; D − B < 0 : les courbes apportent plus que le taux de base.
+        avec_d = [x for x in comptees if x["D"] is not None]
+        if avec_d:
+            t["perte_D"] = round(sum(x["D"] for x in avec_d) / len(avec_d), 4)
+            d = [x["D"] - x["B"] for x in avec_d if x["B"] is not None]
+            t["D_moins_B"] = {"n": len(d), "moyenne": round(sum(d) / len(d), 4) if d else None,
+                              "sequence_confiance": _sequence(d) if d else None}
+            d = [x["C"] - x["D"] for x in avec_d if x["C"] is not None]
+            if d:
+                t["C_moins_D"] = {"n": len(d), "moyenne": round(sum(d) / len(d), 4), "sequence_confiance": _sequence(d)}
         # Skill 0.7.56 (§33), en ombre : la règle des médiateurs contre le calcul actuel, sur les mêmes questions.
         med = [x for x in avec_c if x["C_med"] is not None]
         if med:
@@ -184,7 +196,7 @@ def scorer(racine=None) -> dict:
         # Complément descriptif (Paleka et al., ICLR 2026 : chaque métrique a son défaut ; rapporter log, Brier et
         # calibration ensemble). Le critère du protocole reste la perte log (§5) ; ces chiffres ne le remplacent pas.
         t["complements"] = {k: complements([(x["p"][k], x["oui"]) for x in comptees if x["p"][k] is not None])
-                            for k in ("A", "B", "C")}
+                            for k in ("A", "B", "C", "D")}
         n = len(comptees)
         t["etape"] = ("critère atteint : verdict lisible" if n >= CRITERE else
                       "bilan d'étape : contrôle de fonctionnement, aucune conclusion" if n >= ETAPE else

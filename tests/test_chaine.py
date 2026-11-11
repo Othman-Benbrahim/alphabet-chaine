@@ -18,7 +18,7 @@ os.environ.setdefault("ALPHABET_EXPLORATOIRE", "1")
 
 import alphabet_pipeline as ap  # noqa: E402
 
-from chaine import bras, instantane, passage, registre, score, sources  # noqa: E402
+from chaine import analogues, bras, instantane, passage, registre, score, sources  # noqa: E402
 
 FIX = ICI / "fixtures"
 NOUVEAUX = json.loads((FIX / "gecko_new.json").read_text())
@@ -124,6 +124,27 @@ class Tests(unittest.TestCase):
         self.assertTrue(b["rodage"])
         self.assertIsNone(ap.controle_vue(bras.vue_fixee("R", b, "2026-11-02T03:00:00Z"), "2026-11-02"))
 
+    def test_bras_d_analogues(self):
+        def inst(reserve, top10):
+            return {"releve_le": "2026-11-01T00:00:00Z", "pools": {"reserve_totale_usd": reserve, "sur_courbe": True,
+                    "releve_le": "2026-11-01T00:00:00Z", "pools": []}, "rugcheck": {"resume": {"top10_pct_hors_pools": top10}}}
+        prev, iss = [], []
+        # deux jetons « riches et peu concentrés » sans vidage, deux « pauvres et concentrés » vidés, un résolu APRÈS
+        for i, (res, top, issue, rel) in enumerate([(50000, 10, "non", "2026-11-02T00:00:00Z"),
+                                                    (40000, 12, "non", "2026-11-02T00:00:00Z"),
+                                                    (500, 80, "oui", "2026-11-02T00:00:00Z"),
+                                                    (600, 85, "oui", "2026-11-02T00:00:00Z"),
+                                                    (550, 82, "non", "2026-11-04T00:00:00Z")]):
+            nom = f"instantanes/t{i}.json"
+            registre.ecrire_json(nom, inst(res, top), self.reg)
+            prev.append({"id": f"t{i}", "type": "R", "protocole": 4, "releve_le": "2026-11-01T00:00:00Z", "instantane": nom})
+            iss.append({"id": f"t{i}", "issue": issue, "releve_le": rel})
+        d = analogues.bras_d("R", inst(520, 83), "2026-11-03T00:00:00Z", 0.5, prev, iss, 4, self.reg)
+        self.assertEqual(d["n"], 4)                                   # t4, résolu après le relevé, n'entre pas
+        self.assertEqual(set(d["voisins"][:2]), {"t2", "t3"})
+        self.assertAlmostEqual(d["p"], (2 + 2 * 0.5) / (4 + 2), places=4)
+        self.assertEqual(analogues.bras_d("G", inst(1, 1), "2026-11-03T00:00:00Z", 0.4, prev, iss, 4, self.reg)["p"], 0.4)
+
     def test_passage_complet_hors_ligne(self):
         c = client()
         self.assertGreater(passage.garnir_vivier(c, self.reg), 0)
@@ -142,6 +163,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(len(r["sceau"]), 64)
         self.assertAlmostEqual(r["bras"]["A"]["p"], 0.3)
         self.assertAlmostEqual(r["bras"]["B"]["p"], 0.5)           # aucune issue encore : Jeffreys 0,5, rodage
+        self.assertEqual((r["bras"]["D"]["p"], r["bras"]["D"]["k"]), (0.5, 0))   # aucun voisin résolu : D = B
         self.assertEqual(r["bras"]["C"]["statut"], "etat_nul")
         self.assertIsNone(r["bras"]["C"]["p"])                     # pas de C = B
         self.assertIn("données de jetons", llm.consignes[1])         # protocole 4 : le plan voit les équivalents

@@ -23,10 +23,10 @@ sys.path.insert(0, str(BOT))
 os.environ.setdefault("ALPHABET_EXPLORATOIRE", "1")
 os.environ.setdefault("ALPHABET_EQUIV_DONNEES", "1")    # skill 0.7.55, §32
 
-from chaine import bras, instantane, registre, sources  # noqa: E402
+from chaine import analogues, bras, instantane, registre, sources  # noqa: E402
 from chaine.sources import epoch  # noqa: E402
 
-VERSION = "0.4.6"
+VERSION = "0.4.7"
 PROTOCOLE = bras.PROTOCOLE
 AGE_MIN, AGE_MAX = 15, 240          # minutes (protocole §2)
 RESERVE_MIN = 1000.0                # $ : éligibilité minimale (décision du 2026-11-10)
@@ -135,6 +135,8 @@ async def prevoir_jeton(v: dict, client: sources.Client, llm, racine=None, model
         e = bras.enonce(typ, inst["symbole"], mint, releve_le, po["reserve_totale_usd"])
         ident = f"{mint}-{typ}-{releve_le}"
         b = bras.taux_de_base(typ, releve_le, previsions, issues)
+        # banc 0.4.7, en ombre : trajectoires analogues (k plus proches jetons passés résolus), sans modèle de langage
+        d = analogues.bras_d(typ, inst, releve_le, b["p"], previsions, issues, PROTOCOLE, racine)
         a = await bras.bras_a(llm, e["titre"], e["criteres"], texte, releve_le)
         c = await bras.bras_c(llm, ident, mint, e["titre"], e["criteres"], texte, releve_le,
                               bras.vue_fixee(typ, b, releve_le))
@@ -142,7 +144,7 @@ async def prevoir_jeton(v: dict, client: sources.Client, llm, racine=None, model
             "version_banc": VERSION, "protocole": PROTOCOLE, "id": ident, "mint": mint, "type": typ, "releve_le": releve_le,
             "echeance": e["echeance"], "titre": e["titre"], "reserve_initiale": po["reserve_totale_usd"],
             "sur_courbe": po["sur_courbe"], "instantane": nom_inst, "instantane_sha256": sceau_inst,
-            "modeles": modeles, "bras": {"A": a, "B": b, "C": c}}, racine))
+            "modeles": modeles, "bras": {"A": a, "B": b, "C": c, "D": d}}, racine))
     return lignes
 
 
