@@ -54,7 +54,11 @@ tempéré (α = 0,5, fixé d'avance) ; depuis 0.4.3 (skill 0.7.59, §36), le pro
 0.7.61, §38), le calcul sans plafond ; depuis 0.4.6 (bot 0.10.14 et 0.10.15), deux mesures descriptives au rapport :
 la part des sorties de modèle illisibles (`sorties_illisibles`, par modèle et par étape : bras A, plan, lecture,
 correction) et la présélection des cartes par plongement multilingue (`preselection_ombre`, allumée par défaut, variable
-`ALPHABET_PRESELECTION` à « 0 » pour l'éteindre). Le protocole 4 ne change pas.
+`ALPHABET_PRESELECTION` à « 0 » pour l'éteindre) ; depuis 0.4.7, un bras D en ombre, sans modèle de langage : la
+prévision par trajectoires analogues (les 10 jetons passés résolus avant le relevé dont l'instantané est le plus proche,
+composantes centrées-réduites ; fréquence de l'issue parmi eux, rétrécie vers B : (oui + 2 p_B)/(k + 2)). Le rapport
+donne `C_moins_D` (la lecture alphabet apporte-t-elle plus qu'une comparaison de courbes ?) et `D_moins_B`. D n'entre
+pas dans le critère. Le protocole 4 ne change pas.
 
 ## 4. Intégrité
 
