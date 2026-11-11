@@ -26,7 +26,7 @@ os.environ.setdefault("ALPHABET_EQUIV_DONNEES", "1")    # skill 0.7.55, §32
 from chaine import bras, instantane, registre, sources  # noqa: E402
 from chaine.sources import epoch  # noqa: E402
 
-VERSION = "0.4.5"
+VERSION = "0.4.6"
 PROTOCOLE = bras.PROTOCOLE
 AGE_MIN, AGE_MAX = 15, 240          # minutes (protocole §2)
 RESERVE_MIN = 1000.0                # $ : éligibilité minimale (décision du 2026-11-10)

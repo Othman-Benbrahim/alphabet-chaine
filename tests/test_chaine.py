@@ -177,6 +177,17 @@ class Tests(unittest.TestCase):
         rc = {"resume": {"detenteurs_total": 50}}
         self.assertIn("transactions", passage.ecarter(po, rc))
 
+    def test_sorties_illisibles_preselection(self):
+        prev = [{"modeles": {"principal": "m"}, "bras": {"A": {"erreur": "JSONDecodeError: x"},
+                                                         "C": {"motif": "lecture illisible : y"}}},
+                {"modeles": {"principal": "m"}, "bras": {"A": {"p": 0.2}, "C": {"statut": "estime",
+                 "preselection": {"statut": "calcule", "recouvrement": 0.5, "jaccard": 0.25, "rang_evenement": 2}}}}]
+        r = score.sorties_illisibles(prev)
+        self.assertEqual((r["previsions"], r["illisibles"]), (2, 1))
+        self.assertEqual(r["par_modele"]["m"]["etapes"], {"lecture": 1, "bras_A": 1})
+        s = score.preselection_ombre(prev)
+        self.assertEqual((s["questions"], s["recouvrement_moyen"], s["rang_moyen_evenement"]), (1, 0.5, 2))
+
     def test_score_sequence(self):
         prev, iss = [], []
         for n in range(40):
