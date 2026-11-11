@@ -50,6 +50,58 @@ def complements(paires: list[tuple[float, bool]]) -> dict | None:
                                 "observe": round(sum(o for _, o in v) / len(v), 3)} for k, v in sorted(tranches.items())}}
 
 
+ETAPES_ILLISIBLES = (("plan corrigé illisible", "plan_corrige"), ("plan illisible", "plan"),
+                     ("lecture illisible", "lecture"), ("correction illisible", "correction"))
+
+
+def _a_illisible(a: dict) -> bool:
+    e = str((a or {}).get("erreur") or "")
+    return "JSONDecodeError" in e or "aucun objet JSON" in e
+
+
+def sorties_illisibles(previsions: list[dict]) -> dict | None:
+    """Banc 0.4.6 (bot 0.10.14, d'après LLMMatrix) : part des prévisions dont une sortie de modèle était illisible,
+    par modèle principal et par étape (bras A ; plan, lecture, correction du bras C). Comptée à part des états nuls ;
+    descriptive, sans issue."""
+    if not previsions:
+        return None
+    par: dict[str, dict] = {}
+    for p in previsions:
+        b = p.get("bras") or {}
+        c = b.get("C") or {}
+        mod = str((p.get("modeles") or {}).get("principal") or "non_renseigne")
+        d = par.setdefault(mod, {"previsions": 0, "illisibles": 0, "etapes": {}})
+        d["previsions"] += 1
+        textes = f"{c.get('motif') or ''} || {c.get('derniere_erreur') or ''}"
+        etapes = [e for motif, e in ETAPES_ILLISIBLES if motif in textes]
+        if "plan_corrige" in etapes and "plan" in etapes:
+            etapes.remove("plan")
+        if _a_illisible(b.get("A")):
+            etapes.append("bras_A")
+        for e in etapes:
+            d["etapes"][e] = d["etapes"].get(e, 0) + 1
+        d["illisibles"] += bool(etapes)
+    for d in par.values():
+        d["part"] = round(d["illisibles"] / d["previsions"], 4)
+    tot = sum(d["previsions"] for d in par.values())
+    ill = sum(d["illisibles"] for d in par.values())
+    return {"previsions": tot, "illisibles": ill, "part": round(ill / tot, 4), "par_modele": par}
+
+
+def preselection_ombre(previsions: list[dict]) -> dict | None:
+    """Banc 0.4.6 (bot 0.10.15) : recouvrement entre la présélection par plongement et les cartes du planificateur."""
+    ps = [((p.get("bras") or {}).get("C") or {}).get("preselection") for p in previsions]
+    ps = [y for y in ps if isinstance(y, dict)]
+    if not ps:
+        return None
+    ok = [y for y in ps if y.get("statut") == "calcule" and y.get("recouvrement") is not None]
+    moy = lambda v: round(sum(v) / len(v), 4) if v else None
+    return {"questions": len(ps), "calculees": len(ok), "indisponibles": len(ps) - len(ok),
+            "recouvrement_moyen": moy([y["recouvrement"] for y in ok]),
+            "jaccard_moyen": moy([y["jaccard"] for y in ok]),
+            "rang_moyen_evenement": moy([y["rang_evenement"] for y in ok if isinstance(y.get("rang_evenement"), int)])}
+
+
 def scorer(racine=None) -> dict:
     prev = {p["id"]: p for p in registre.lire("previsions.jsonl", racine)}
     rapport: dict = {"par_type": {}}
@@ -138,6 +190,9 @@ def scorer(racine=None) -> dict:
                       "bilan d'étape : contrôle de fonctionnement, aucune conclusion" if n >= ETAPE else
                       "trop tôt")
         rapport["par_type"][typ] = t
+    courantes = [p for p in prev.values() if p.get("protocole", 1) == PROTOCOLE]
+    rapport["sorties_illisibles"] = sorties_illisibles(courantes)      # banc 0.4.6, descriptif
+    rapport["preselection_ombre"] = preselection_ombre(courantes)      # banc 0.4.6, descriptif
     rapport["lecture"] = ("perte log : plus bas = mieux. C − B < 0 et C − A < 0, verdict « meilleur » des deux "
                           "séquences à 200 questions par type : l'hypothèse tient (protocole §6).")
     return rapport

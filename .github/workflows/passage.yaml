@@ -44,6 +44,11 @@ jobs:
       - name: Environnement du bot
         working-directory: bot
         run: uv sync --locked
+      - name: Cache du modèle de plongement
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/.cache/fastembed
+          key: fastembed-paraphrase-multilingual-MiniLM-L12-v2
       - name: Contrôle du skill
         working-directory: bot
         run: uv run python alphabet-situationnel/scripts/moteur.py audit
@@ -63,6 +68,8 @@ jobs:
           ALPHABET_PETIT_LLM: ${{ vars.ALPHABET_PETIT_LLM }}
           ALPHABET_BOT: .
           ALPHABET_EQUIV_DONNEES: "1"     # skill 0.7.55, §32 : équivalents de données des jetons
+          ALPHABET_PRESELECTION: ${{ vars.ALPHABET_PRESELECTION || '1' }}   # banc 0.4.6 (bot 0.10.15) : présélection par plongement, en ombre
+          FASTEMBED_CACHE_PATH: /home/runner/.cache/fastembed
           ALPHABET_TRADUCTION: ${{ vars.ALPHABET_TRADUCTION || '1' }}   # skill 0.7.60 (§37) : allumé par défaut ; « 0 » l'éteint
           ALPHABET_REGISTRE: ${{ runner.temp }}/registre-bot
           CHAINE_REGISTRE: ${{ github.workspace }}/registre

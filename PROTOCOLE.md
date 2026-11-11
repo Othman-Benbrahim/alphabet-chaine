@@ -51,7 +51,10 @@ contrefactuel. Depuis la version 0.4.1 du banc (skill 0.7.57, §34), en ombre au
 (`C_noisy_or`) et la borne de la valeur de l'information, enregistrées avec C ; depuis 0.4.2 (skill 0.7.58, §35), C
 tempéré (α = 0,5, fixé d'avance) ; depuis 0.4.3 (skill 0.7.59, §36), le programme génératif ; depuis 0.4.4 (skill 0.7.60,
 §37), la lecture probabiliste, allumée par défaut (variable `ALPHABET_TRADUCTION` à « 0 » pour l'éteindre ; un appel de plus par jeton lu) ; depuis 0.4.5 (skill
-0.7.61, §38), le calcul sans plafond. Le protocole 4 ne change pas.
+0.7.61, §38), le calcul sans plafond ; depuis 0.4.6 (bot 0.10.14 et 0.10.15), deux mesures descriptives au rapport :
+la part des sorties de modèle illisibles (`sorties_illisibles`, par modèle et par étape : bras A, plan, lecture,
+correction) et la présélection des cartes par plongement multilingue (`preselection_ombre`, allumée par défaut, variable
+`ALPHABET_PRESELECTION` à « 0 » pour l'éteindre). Le protocole 4 ne change pas.
 
 ## 4. Intégrité
 

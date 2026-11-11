@@ -134,7 +134,10 @@ async def bras_c(llm: Llm, ident: str, mint: str, titre: str, criteres: str, fai
               "tentatives": c.get("tentatives"), "reprises_plan": c.get("reprises_plan"),
               # skill 0.7.56 (§33), en ombre : règle des médiateurs et ablation carte par carte, jamais le chiffre C.
               "ombre_causale": c.get("ombre_causale") or ex.get("ombre_causale"),
-              "faits_futurs_retires": c.get("faits_futurs_retires")}
+              "faits_futurs_retires": c.get("faits_futurs_retires"),
+              # banc 0.4.6 (bot 0.10.14, 0.10.15) : dernière erreur (sorties illisibles) et présélection en ombre.
+              "derniere_erreur": (str(c.get("derniere_erreur") or "")[:300] or None),
+              "preselection": c.get("preselection")}
     d = c.get("dossier")
     if d is not None:
         sortie["dossier"] = {k: v for k, v in d.items() if not str(k).startswith("_")}
